@@ -566,7 +566,7 @@ async function pullIfNewer() {
     if (dirtyAt) return;
 
     __isRestoring = true;
-    importState(cloud.data);
+    importState(cloud);
     localStorage.setItem("__flow_lastPulledAt", cloud.savedAt || new Date().toISOString());
   } catch (e) {
     console.warn("auto pull failed", e);
@@ -676,6 +676,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
 
 
 
