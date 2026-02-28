@@ -519,15 +519,9 @@ function parseIso(t) {
 let __syncTimer = null;
 let __isRestoring = false;
 
+// ローカル変更が入ったら「あとで保存」を予約（連打しても1回にまとめる）
 function scheduleCloudSave(delayMs = 1500) {
-  // ★ 暴走防止ガード：2秒以内の連続予約を捨てる
-  const now = Date.now();
-  const last = Number(localStorage.getItem("__flow_saveScheduledAt") || 0);
-  if (now - last < 2000) return;
-  localStorage.setItem("__flow_saveScheduledAt", String(now));
-
-  if (__isRestoring) return;
-
+  if (__isRestoring) return; // 復元中は保存しない（ループ防止）
   localStorage.setItem("__flow_localDirtyAt", new Date().toISOString());
 
   clearTimeout(__syncTimer);
@@ -541,21 +535,6 @@ function scheduleCloudSave(delayMs = 1500) {
     }
   }, delayMs);
 }
-  if (__isRestoring) return;
-  localStorage.setItem("__flow_localDirtyAt", new Date().toISOString());
-
-  clearTimeout(__syncTimer);
-  __syncTimer = setTimeout(async () => {
-    try {
-      await cloudSave();
-      localStorage.setItem("__flow_lastSaveAt", new Date().toISOString());
-      localStorage.removeItem("__flow_localDirtyAt");
-    } catch (e) {
-      console.warn("auto save failed", e);
-    }
-  }, delayMs);
-}
-
 async function pullIfNewer() {
   if (!getPassphrase()) return;
   if (__isRestoring) return;
@@ -684,6 +663,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
 
 
 
