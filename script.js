@@ -568,7 +568,8 @@ function cloudLoad() {
       src = appendParam(src, "t", String(Date.now()));
 
       script.src = src;
-      document.body.appendChild(script);
+console.log("[cloudLoad] src =", script.src);
+document.body.appendChild(script);
 
       // ★“ロードできたけどcallbackが呼ばれない”系も拾う（10秒で諦める）
       setTimeout(() => finish("cloudLoad timeout"), 10000);
@@ -749,5 +750,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
 
 
