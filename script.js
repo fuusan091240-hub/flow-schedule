@@ -97,9 +97,6 @@ let daily = JSON.parse(localStorage.getItem("daily")) || [
 ];
 let dailyLastReset = localStorage.getItem("dailyLastReset") || "";
 
-const taskList = document.getElementById("taskList");
-const dailyList = document.getElementById("dailyList");
-
 const capacityMap = {
   0: 2,  // 虚無
   1: 3,  // 低
@@ -148,6 +145,7 @@ function escapeHtml(str) {
 }
 
 function renderDaily() {
+  const dailyList = document.getElementById("dailyList");
   if (!dailyList) return;
   dailyList.innerHTML = "";
 
@@ -189,6 +187,8 @@ function renderDaily() {
 }
 
 function renderTasks() {
+  const taskList = document.getElementById("taskList");
+if (!taskList) return;
   taskList.innerHTML = "";
 
   const capacity = capacityMap[currentMood];
@@ -549,12 +549,6 @@ if (addDailyBtn) {
   });
 }
 
-// 初期化
-resetDailyIfNeeded();
-renderDaily();
-renderTasks();
-renderManuscript();
-
 function exportState() {
   return {
     version: 1,
@@ -596,46 +590,53 @@ function importState(state) {
 
 async function cloudSave() {
   if (!getPassphrase()) {
-  refreshPassBanner();
-  return; // 合言葉が無いならクラウド送信しない
-}
+    refreshPassBanner();
+    return; // 合言葉が無いならクラウド送信しない
+  }
+
   const payload = exportState();
+  const keyHash = await getKeyHash();
 
-const keyHash = await getKeyHash();
-
-await fetch(`${GAS_EXEC_URL}?action=save`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    ...payload,
-    keyHash
-  })
-});
+  await fetch(`${GAS_EXEC_URL}?action=save`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...payload, keyHash })
+  });
+}
 
 function cloudLoad() {
-  return new Promise((resolve, reject) => {
-    const cb = "__flow_cb_" + Date.now();
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!getPassphrase()) return resolve(null);
 
-    window[cb] = (obj) => {
-      delete window[cb];
-      script.remove();
-      resolve(obj);
-    };
+      const keyHash = await getKeyHash();
+      const cb = "__flow_cb_" + Date.now();
 
-    const script = document.createElement("script");
-    script.onerror = () => {
-      delete window[cb];
-      script.remove();
-      reject("cloudLoad failed");
-    };
+      window[cb] = (obj) => {
+        delete window[cb];
+        script.remove();
+        resolve(obj);
+      };
 
-    script.src = `${GAS_EXEC_URL}?action=load&callback=${cb}&t=${Date.now()}`;
-    document.body.appendChild(script);
+      const script = document.createElement("script");
+      script.onerror = () => {
+        delete window[cb];
+        script.remove();
+        reject("cloudLoad failed");
+      };
+
+      // ★ load 側にも keyHash を付ける（GASで拒否されないように）
+      script.src = `${GAS_EXEC_URL}?action=load&callback=${cb}&keyHash=${encodeURIComponent(keyHash)}&t=${Date.now()}`;
+      document.body.appendChild(script);
+    } catch (e) {
+      reject(e);
+    }
   });
 }
 
 async function cloudRestore() {
   const state = await cloudLoad();
+  if (!state) return;
   importState(state);
   location.reload();
 }
@@ -727,16 +728,92 @@ function startAutoSync() {
   setInterval(pullIfNewer, 10000);
 }
 
-// 初期化（最後に実行）
-resetDailyIfNeeded();
-renderDaily();
-renderTasks();
-renderManuscript();
-startAutoSync();
+document.addEventListener("DOMContentLoaded", () => {
+  // DOM参照はここで取る（null事故防止）
+  window.__taskListEl = document.getElementById("taskList");
+  window.__dailyListEl = document.getElementById("dailyList");
 
-// ===== 起動時処理 =====
-document.addEventListener("DOMContentLoaded", async () => {
-  refreshPassBanner(); // 合言葉未設定なら帯を出す
-  // ここでpromptは出さない（スマホがブロックすることがある）
+  refreshPassBanner();
+
+  // moodボタン：新しいHTMLに合わせて #moodButtons を使う
+  document.querySelectorAll("#moodButtons button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      currentMood = parseInt(btn.dataset.mood, 10);
+      localStorage.setItem("mood", String(currentMood));
+      scheduleCloudSave();
+      renderTasks();
+    });
+  });
+
+  // Daily追加
+  const addDailyBtn = document.getElementById("addDaily");
+  addDailyBtn?.addEventListener("click", () => {
+    const input = document.getElementById("dailyInput");
+    const title = input?.value.trim() || "";
+    if (!title) return;
+
+    daily.push({
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+      title,
+      done: false,
+    });
+
+    saveDaily();
+    if (input) input.value = "";
+    renderDaily();
+    scheduleCloudSave();
+  });
+
+  // タスク追加
+  document.getElementById("addTask")?.addEventListener("click", () => {
+    const titleEl = document.getElementById("taskInput");
+    const deadlineEl = document.getElementById("deadlineInput");
+    const energyEl = document.getElementById("energyInput");
+
+    const title = titleEl?.value.trim() || "";
+    const deadline = deadlineEl?.value || "";
+    const energy = Number(energyEl?.value);
+
+    if (!title) return;
+    if (!Number.isFinite(energy) || energy < 0 || energy > 5) return;
+
+    tasks.push({
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+      title,
+      deadline,
+      energy,
+      done: false,
+      createdAt: new Date().toISOString(),
+    });
+
+    saveTasks();
+    if (titleEl) titleEl.value = "";
+    if (deadlineEl) deadlineEl.value = "";
+    if (energyEl) energyEl.value = "";
+
+    renderTasks();
+    scheduleCloudSave();
+  });
+
+  // 表示切替
+  document.getElementById("showToday")?.addEventListener("click", () => {
+    viewMode = "today";
+    localStorage.setItem("viewMode", "today");
+    renderTasks();
+    scheduleCloudSave();
+  });
+
+  document.getElementById("showAll")?.addEventListener("click", () => {
+    viewMode = "all";
+    localStorage.setItem("viewMode", "all");
+    renderTasks();
+    scheduleCloudSave();
+  });
+
+  // 初期描画（ここだけ1回）
+  resetDailyIfNeeded();
+  renderDaily();
+  renderTasks();
+  renderManuscript();
+  startAutoSync();
 });
-
