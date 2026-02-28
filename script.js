@@ -549,7 +549,6 @@ async function pullIfNewer() {
     __isRestoring = true;
     importState(cloud);
     localStorage.setItem("__flow_lastPulledAt", cloud.savedAt || new Date().toISOString());
-    location.reload();
   } catch (e) {
     console.warn("auto pull failed", e);
   } finally {
@@ -558,15 +557,16 @@ async function pullIfNewer() {
 }
 
 function startAutoSync() {
+  // 二重起動防止
   if (window.__flowAutoSyncStarted) return;
   window.__flowAutoSyncStarted = true;
 
-  setTimeout(() => { pullIfNewer().catch(()=>{}); }, 300);
+  // 起動時に1回だけ同期（少し待ってから）
+  setTimeout(() => {
+    pullIfNewer().catch(() => {});
+  }, 300);
 
-  if (window.__flowPullTimer) clearInterval(window.__flowPullTimer);
-  window.__flowPullTimer = setInterval(() => {
-    pullIfNewer().catch(()=>{});
-  }, 30000);
+  // ★定期同期はしない
 }
 
 // =====================
@@ -659,6 +659,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 console.log("SCRIPT END REACHED");
+
 
 
 
