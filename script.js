@@ -567,8 +567,11 @@ function cloudLoad() {
       src = appendParam(src, "keyHash", keyHash);
       src = appendParam(src, "t", String(Date.now()));
 
-      script.src = src;
-console.log("[cloudLoad] src =", script.src);
+      // （src を組み立てた直後）
+window.__flow_lastCloudLoadSrc = src;              // ★必ず残る
+console.log("[cloudLoad] src =", src);             // これは見えたらラッキー
+
+script.src = src;
 document.body.appendChild(script);
 
       // ★“ロードできたけどcallbackが呼ばれない”系も拾う（10秒で諦める）
@@ -750,6 +753,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
 
 
 
