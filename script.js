@@ -181,35 +181,49 @@ function renderTasks() {
   const taskList = document.getElementById("taskList");
   if (!taskList) return;
   taskList.innerHTML = "";
-}
-  const capacity = capacityMap[currentMood] ?? 5;
-  const used = tasks.filter(t => t.done).reduce((sum, t) => sum + (Number(t.energy)||0), 0);
+
+  const capacity = capacityMap[currentMood] ?? 0;
+
+  // 今日の使用ポイント（完了タスクのみ）
+  const used = (tasks || [])
+    .filter(t => t && t.done)
+    .reduce((sum, t) => sum + Number(t.energy || 0), 0);
 
   const display = document.getElementById("capacityDisplay");
   if (display) {
-    const formatted = new Date().toLocaleDateString("ja-JP", {
-      year:"numeric", month:"2-digit", day:"2-digit", weekday:"short"
+    const today = new Date();
+    const formatted = today.toLocaleDateString("ja-JP", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      weekday: "short"
     });
     display.textContent = `${formatted} ｜ 許容量：${capacity} / 使用：${used}`;
     display.style.color = (used > capacity) ? "red" : "black";
   }
 
-  const sorted = [...tasks].sort((a,b) => {
-    const ad = a.deadline ? new Date(a.deadline).getTime() : Infinity;
-    const bd = b.deadline ? new Date(b.deadline).getTime() : Infinity;
+  // 締切順（締切なしは最後）
+  const sorted = [...(tasks || [])].sort((a, b) => {
+    const ad = a?.deadline ? new Date(a.deadline).getTime() : Infinity;
+    const bd = b?.deadline ? new Date(b.deadline).getTime() : Infinity;
     return ad - bd;
   });
 
-  const filtered = (viewMode === "today") ? sorted.filter(t => !t.done) : sorted;
+  // 表示モード
+  let filteredTasks = sorted;
+  if (viewMode === "today") {
+    filteredTasks = sorted.filter(t => !t.done);
+  }
 
-  filtered.forEach((task) => {
-    const canDo = (Number(task.energy)||0) <= capacity;
+  filteredTasks.forEach((task) => {
+    const canDo = Number(task.energy || 0) <= capacity;
 
     const li = document.createElement("li");
     li.className = "task-row";
     if (!canDo) li.classList.add("task-disabled");
     if (task.done) li.classList.add("task-done");
 
+    // 完了チェック
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = !!task.done;
@@ -220,19 +234,22 @@ function renderTasks() {
       scheduleCloudSave();
     });
 
+    // 表示用
     const viewBox = document.createElement("div");
     viewBox.style.flex = "1";
 
     const deadlineText = task.deadline ? task.deadline : "締切なし";
     viewBox.innerHTML = `
       <strong>${escapeHtml(task.title)}</strong>
-      <span class="task-meta">（締切: ${deadlineText} / 消耗度: ${Number(task.energy)||0}）</span>
+      <span class="task-meta">（締切: ${deadlineText} / 消耗度: ${Number(task.energy || 0)}）</span>
     `;
 
+    // 編集
     const editBtn = document.createElement("button");
     editBtn.textContent = "✏";
     editBtn.title = "編集";
 
+    // 削除
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "🗑";
     deleteBtn.title = "削除";
@@ -249,7 +266,7 @@ function renderTasks() {
 
       const titleInput = document.createElement("input");
       titleInput.type = "text";
-      titleInput.value = task.title || "";
+      titleInput.value = task.title;
 
       const deadlineInput = document.createElement("input");
       deadlineInput.type = "date";
@@ -259,11 +276,13 @@ function renderTasks() {
       energyInput.type = "number";
       energyInput.min = "0";
       energyInput.max = "5";
-      energyInput.value = String(Number(task.energy)||0);
+      energyInput.value = String(Number(task.energy || 0));
 
       const clearDeadlineBtn = document.createElement("button");
       clearDeadlineBtn.textContent = "締切なし";
-      clearDeadlineBtn.addEventListener("click", () => { deadlineInput.value = ""; });
+      clearDeadlineBtn.addEventListener("click", () => {
+        deadlineInput.value = "";
+      });
 
       const saveBtn = document.createElement("button");
       saveBtn.textContent = "保存";
@@ -273,7 +292,7 @@ function renderTasks() {
 
       saveBtn.addEventListener("click", () => {
         const newTitle = titleInput.value.trim();
-        const newDeadline = deadlineInput.value;
+        const newDeadline = deadlineInput.value; // 空なら締切なし
         const newEnergy = Number(energyInput.value);
 
         if (!newTitle) return;
@@ -659,6 +678,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 console.log("SCRIPT END REACHED");
 console.log("SCRIPT OK");
+
 
 
 
