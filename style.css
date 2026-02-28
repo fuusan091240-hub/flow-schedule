@@ -158,3 +158,48 @@ a {
   .container, main, .app, #app { padding: 16px; }
   button, .btn, a, input, select, textarea { min-height: 44px; }
 }
+/* ===== Mobile fix: 横はみ出し・崩れ対策 ===== */
+
+/* まず全要素を「箱の計算」を安定させる */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* 横スクロールを強制的に殺す（はみ出し原因があっても見た目を守る） */
+html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+
+/* 画像や入力がはみ出さないように */
+img, input, textarea, select, button { max-width: 100%; }
+
+/* 文字が長くても横にはみ出さないように */
+body { overflow-wrap: anywhere; word-break: break-word; }
+
+/* スマホでは「2カラムっぽい配置」をやめて縦積みにする */
+@media (max-width: 480px) {
+  /* ありがちな固定幅・最小幅を無効化 */
+  [style*="width:"], [style*="min-width"], .container, main, #app, .app {
+    max-width: 100% !important;
+  }
+
+  /* どこかに display:flex の行があると横並びで崩れがちなので折り返し許可 */
+  .row, .task, .task-row, .daily-row, .daily-item, .item, .line {
+    flex-wrap: wrap;
+  }
+
+  /* Dailyの各行を縦積みに寄せる（チェック・テキスト・ゴミ箱が横に並んで崩れるのを防ぐ） */
+  .daily-row, .daily-item, .task-row, .task, .item, .line {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  /* ゴミ箱などの右端ボタンが「右に飛んで見える」のを防ぐ */
+  .delete, .trash, .remove, .btn-delete, .icon-btn {
+    align-self: flex-end;
+  }
+
+  /* チェックボックスが巨大化/位置ズレするのを抑える */
+  input[type="checkbox"] {
+    width: 28px;
+    height: 28px;
+  }
+}
