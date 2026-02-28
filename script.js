@@ -5,10 +5,19 @@
 // =====================
 console.log("FLOW script.js loaded", new Date().toISOString());
 
-const GAS_EXEC_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AY5xjrQJ0fNImviyG1JwAmcMRjC2ZFWJJp7KaneeCYsb4DPRrxdNAHWdadMi2QDmxM26pDVVbgU9Wjhaui6cPG1CCOpfFFCWqXJt3SAjioRUl2CAXuuqCr3aw554VChPppcRJe-uTii2cZY-G7fyJB9V4odQO9Z5Ix-eqCFzjgb7JcQ9UCRGBIuYqOhkopnlSImpyLGvxhNnR08vR3bouuFrdUoWVxLe6m3Jh1_G7cI21XkumgI01WHsD461mTRDZUBeFN9I5uB_X97NBMbA6sa4EHW527qRYovI6ubzPJoC-NQwE1Eq3y4&lib=MiD0L96dLXag0lRHKSz6xxmDs_wf-hvwW";
+// ★あなたの方で XXXXX に置き換えOK
+const GAS_EXEC_URL = "https://script.google.com/macros/s/AKfycbyTiMB9GFIcOmvrPbikwzxuoKWfrFhlgeITKADoXiGEzK-N50YD2xN1D206PZy7WzOT/exec";
 
+/**
+ * URLへクエリを安全に付与する（? / & 二重事故を防止）
+ */
+function appendParam(url, key, value) {
+  const u = new URL(url);
+  u.searchParams.set(key, value);
+  return u.toString();
+}
 function withAction(url, action) {
-  return url + (url.includes("?") ? "&" : "?") + "action=" + encodeURIComponent(action);
+  return appendParam(url, "action", action);
 }
 
 // =====================
@@ -486,22 +495,48 @@ function importState(state) {
   localStorage.setItem("manuscript", JSON.stringify(safeManuscript));
 }
 
+function parseIso(t) {
+  const n = Date.parse(t || "");
+  return Number.isFinite(n) ? n : 0;
+}
+
+let __syncTimer = null;
+let __isRestoring = false;
+
+/**
+ * ★保存は「redirect/CORSに強い」順に試す
+ * 1) sendBeacon（最優先：レスポンス不要で送れる）
+ * 2) fetch keepalive（beacon失敗時の保険）
+ */
 async function cloudSave() {
   if (!getPassphrase()) {
     refreshPassBanner();
-    return;
+    return false;
   }
 
   const payload = exportState();
   const keyHash = await getKeyHash();
-console.log("[SYNC] keyHash:", keyHash);
-  
-// CORS回避：preflightを起こしにくい形で送る
-await fetch(withAction(GAS_EXEC_URL, "save"), {
-  method: "POST",
-  body: JSON.stringify({ ...payload, keyHash })
-});
-} 
+  const url = withAction(GAS_EXEC_URL, "save");
+  const body = JSON.stringify({ ...payload, keyHash });
+
+  // 1) sendBeacon（強い）
+  try {
+    const ok = navigator.sendBeacon(
+      url,
+      new Blob([body], { type: "text/plain;charset=UTF-8" })
+    );
+    if (ok) return true;
+  } catch {}
+
+  // 2) fetch keepalive（保険）
+  await fetch(url, {
+    method: "POST",
+    body,
+    // keepalive はページ遷移直前でも送れることがある（対応ブラウザなら）
+    keepalive: true,
+  });
+  return true;
+}
 
 function cloudLoad() {
   return new Promise(async (resolve, reject) => {
@@ -524,7 +559,13 @@ function cloudLoad() {
         reject("cloudLoad failed");
       };
 
-      script.src = `${withAction(GAS_EXEC_URL, "load")}&callback=${cb}&keyHash=${encodeURIComponent(keyHash)}&t=${Date.now()}`;
+      // URL生成も new URL() で事故らないよう統一
+      let src = withAction(GAS_EXEC_URL, "load");
+      src = appendParam(src, "callback", cb);
+      src = appendParam(src, "keyHash", keyHash);
+      src = appendParam(src, "t", String(Date.now()));
+
+      script.src = src;
       document.body.appendChild(script);
     } catch (e) {
       reject(e);
@@ -532,16 +573,9 @@ function cloudLoad() {
   });
 }
 
-function parseIso(t) {
-  const n = Date.parse(t || "");
-  return Number.isFinite(n) ? n : 0;
-}
-
-let __syncTimer = null;
-let __isRestoring = false;
-
 function scheduleCloudSave(delayMs = 1500) {
   if (__isRestoring) return;
+
   localStorage.setItem("__flow_localDirtyAt", new Date().toISOString());
 
   clearTimeout(__syncTimer);
@@ -555,6 +589,7 @@ function scheduleCloudSave(delayMs = 1500) {
     }
   }, delayMs);
 }
+
 async function pullIfNewer() {
   if (!getPassphrase()) { console.log("[PULL] no passphrase"); return; }
   if (__isRestoring) { console.log("[PULL] __isRestoring true"); return; }
@@ -567,9 +602,17 @@ async function pullIfNewer() {
 
     const cloudAt = parseIso(cloud.savedAt);
     const localAt = parseIso(localStorage.getItem("__flow_lastPulledAt"));
-    console.log("[PULL] times", { cloudAt, localAt, cloudSavedAt: cloud.savedAt, lastPulledAt: localStorage.getItem("__flow_lastPulledAt") });
+    console.log("[PULL] times", {
+      cloudAt,
+      localAt,
+      cloudSavedAt: cloud.savedAt,
+      lastPulledAt: localStorage.getItem("__flow_lastPulledAt")
+    });
 
-    if (cloudAt <= localAt) { console.log("[PULL] blocked: cloudAt <= localAt"); return; }
+    if (cloudAt && localAt && cloudAt <= localAt) {
+      console.log("[PULL] blocked: cloudAt <= localAt");
+      return;
+    }
 
     const dirtyRaw = localStorage.getItem("__flow_localDirtyAt");
     const dirtyAt = parseIso(dirtyRaw);
@@ -581,6 +624,18 @@ async function pullIfNewer() {
     importState(cloud);
     localStorage.setItem("__flow_lastPulledAt", cloud.savedAt || new Date().toISOString());
     console.log("[PULL] imported, set __flow_lastPulledAt =", localStorage.getItem("__flow_lastPulledAt"));
+
+    // ★pull後にUIへ反映（ここが無いと見た目だけ古いことがある）
+    tasks = safeJsonParse("tasks", []);
+    daily = safeJsonParse("daily", daily);
+    viewMode = localStorage.getItem("viewMode") || "today";
+    currentMood = Number(localStorage.getItem("mood") || 2);
+    manuscript = loadManuscriptSafe();
+
+    resetDailyIfNeeded();
+    renderDaily();
+    renderTasks();
+    renderManuscript();
   } catch (e) {
     console.warn("auto pull failed", e);
   } finally {
@@ -689,20 +744,3 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
