@@ -214,8 +214,7 @@ body { overflow-wrap: anywhere; word-break: break-word; }
 }
 
 .mood-buttons button {
-  flex: 0 0 auto;         /* 伸びない・縮まない */
-  white-space: nowrap;    /* テキスト改行しない */
-  padding: 8px 10px;
-  font-size: 14px;
+  min-width: auto;
+  border-radius: 12px;
 }
+
