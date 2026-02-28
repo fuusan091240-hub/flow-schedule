@@ -1,3 +1,4 @@
+// script.js（全文・置換版）
 "use strict";
 
 // =====================
@@ -5,19 +6,26 @@
 // =====================
 console.log("FLOW script.js loaded", new Date().toISOString());
 
-// ★あなたの方で XXXXX に置き換えOK
+// ★ここだけ入れ替える（/execでもgoogleusercontentでも可）
 const GAS_EXEC_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AY5xjrQd3Z3vpMequzfVAVny3KiWGxvW4oujSBZzn1OXni7YbNpbHPYkGw16ToV7OIuRHOP4qMvj5gtiBxWdWt5aDg5UzYU4wIgUuoHwWZQ3_yn9bIXcV8wmTiF3iaZSAsnMSG-uxHQSxpnrx-UI06RctKEcOAJiVsXti8A7YADbc2LN6I8PvfpxFXxRsroeQCczEZ7artTWu8HpBtA5y4PSOS7LQuCrNoh2x1gZT8g4AwpYSOIuWl46w7z5AMu7A4G9YTijej2RFqSq20qVj_HvyrQ-ajvnk0q55LNEtmwVc7rIa1s0MPM&lib=MiD0L96dLXag0lRHKSz6xxmDs_wf-hvwW";
 
-/**
- * URLへクエリを安全に付与する（? / & 二重事故を防止）
- */
-function appendParam(url, key, value) {
+// =====================
+// URL helpers (壊れない: URL API で統一)
+// =====================
+function flowUrlSet(url, key, value) {
   const u = new URL(url);
-  u.searchParams.set(key, value);
+  u.searchParams.set(key, String(value));
   return u.toString();
 }
-function withAction(url, action) {
-  return appendParam(url, "action", action);
+function flowUrlWithAction(url, action) {
+  return flowUrlSet(url, "action", action);
+}
+function flowUrlWithParams(url, params) {
+  let out = url;
+  for (const [k, v] of Object.entries(params)) {
+    out = flowUrlSet(out, k, v);
+  }
+  return out;
 }
 
 // =====================
@@ -57,7 +65,6 @@ function refreshPassBanner() {
     if (!pass) return;
     setPassphrase(pass);
     refreshPassBanner();
-    // 初回だけ軽く同期を走らせる（失敗しても落とさない）
     try { await pullIfNewer(); } catch {}
   };
 }
@@ -83,7 +90,6 @@ let daily = safeJsonParse("daily", [
 
 let currentMood = Number(localStorage.getItem("mood") || 2);
 let viewMode = localStorage.getItem("viewMode") || "today";
-
 let dailyLastReset = localStorage.getItem("dailyLastReset") || "";
 
 function loadManuscriptSafe() {
@@ -197,7 +203,6 @@ function renderTasks() {
 
   const capacity = capacityMap[currentMood] ?? 0;
 
-  // 今日の使用ポイント（完了タスクのみ）
   const used = (tasks || [])
     .filter(t => t && t.done)
     .reduce((sum, t) => sum + Number(t.energy || 0), 0);
@@ -215,14 +220,12 @@ function renderTasks() {
     display.style.color = (used > capacity) ? "red" : "black";
   }
 
-  // 締切順（締切なしは最後）
   const sorted = [...(tasks || [])].sort((a, b) => {
     const ad = a?.deadline ? new Date(a.deadline).getTime() : Infinity;
     const bd = b?.deadline ? new Date(b.deadline).getTime() : Infinity;
     return ad - bd;
   });
 
-  // 表示モード
   let filteredTasks = sorted;
   if (viewMode === "today") {
     filteredTasks = sorted.filter(t => !t.done);
@@ -236,7 +239,6 @@ function renderTasks() {
     if (!canDo) li.classList.add("task-disabled");
     if (task.done) li.classList.add("task-done");
 
-    // 完了チェック
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = !!task.done;
@@ -247,7 +249,6 @@ function renderTasks() {
       scheduleCloudSave();
     });
 
-    // 表示用
     const viewBox = document.createElement("div");
     viewBox.style.flex = "1";
 
@@ -257,12 +258,10 @@ function renderTasks() {
       <span class="task-meta">（締切: ${deadlineText} / 消耗度: ${Number(task.energy || 0)}）</span>
     `;
 
-    // 編集
     const editBtn = document.createElement("button");
     editBtn.textContent = "✏";
     editBtn.title = "編集";
 
-    // 削除
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "🗑";
     deleteBtn.title = "削除";
@@ -305,7 +304,7 @@ function renderTasks() {
 
       saveBtn.addEventListener("click", () => {
         const newTitle = titleInput.value.trim();
-        const newDeadline = deadlineInput.value; // 空なら締切なし
+        const newDeadline = deadlineInput.value;
         const newEnergy = Number(energyInput.value);
 
         if (!newTitle) return;
@@ -459,7 +458,7 @@ function renderManuscript() {
 }
 
 // =====================
-// Cloud sync (keyHash required)
+// Cloud sync (export/import)
 // =====================
 function exportState() {
   return {
@@ -503,11 +502,10 @@ function parseIso(t) {
 let __syncTimer = null;
 let __isRestoring = false;
 
-/**
- * ★保存は「redirect/CORSに強い」順に試す
- * 1) sendBeacon（最優先：レスポンス不要で送れる）
- * 2) fetch keepalive（beacon失敗時の保険）
- */
+// =====================
+// Cloud: SAVE
+// - redirect/ CORS を踏みにくい順で送る（beacon優先）
+// =====================
 async function cloudSave() {
   if (!getPassphrase()) {
     refreshPassBanner();
@@ -516,10 +514,11 @@ async function cloudSave() {
 
   const payload = exportState();
   const keyHash = await getKeyHash();
-  const url = withAction(GAS_EXEC_URL, "save");
+
+  const url = flowUrlWithAction(GAS_EXEC_URL, "save");
   const body = JSON.stringify({ ...payload, keyHash });
 
-  // 1) sendBeacon（強い）
+  // 1) 最優先：sendBeacon（redirect/CORSに強い）
   try {
     const ok = navigator.sendBeacon(
       url,
@@ -528,16 +527,15 @@ async function cloudSave() {
     if (ok) return true;
   } catch {}
 
-  // 2) fetch keepalive（保険）
-  await fetch(url, {
-    method: "POST",
-    body,
-    // keepalive はページ遷移直前でも送れることがある（対応ブラウザなら）
-    keepalive: true,
-  });
+  // 2) 保険：fetch keepalive（レスポンス不要）
+  await fetch(url, { method: "POST", body, keepalive: true });
   return true;
 }
 
+// =====================
+// Cloud: LOAD (JSONP)
+// - action=load + callback + keyHash を URL API で確実に付与
+// =====================
 function cloudLoad() {
   return new Promise(async (resolve, reject) => {
     try {
@@ -561,30 +559,32 @@ function cloudLoad() {
       const script = document.createElement("script");
       script.onerror = () => finish("cloudLoad failed");
 
-      // ★URLを必ず壊れない形で構築する
-let src = withAction(GAS_EXEC_URL, "load");
-src = appendParam(src, "callback", cb);
-src = appendParam(src, "keyHash", keyHash);
-src = appendParam(src, "t", String(Date.now()));
+      let src = flowUrlWithAction(GAS_EXEC_URL, "load");
+      src = flowUrlWithParams(src, {
+        callback: cb,
+        keyHash,
+        t: Date.now()
+      });
 
-// ★この行は「src完成後」に置く（ここ以外に置かない）
-window.__flow_lastCloudLoadSrc = src;
+      // ★必ず回収できるように保存
+      window.__flow_lastCloudLoadSrc = src;
+      console.log("[cloudLoad] src =", src);
 
-// ★これでscriptロード開始
-script.src = src;
-document.body.appendChild(script);
+      script.src = src;
+      document.body.appendChild(script);
 
-      // ★“ロードできたけどcallbackが呼ばれない”系も拾う（10秒で諦める）
       setTimeout(() => finish("cloudLoad timeout"), 10000);
-
     } catch (e) {
       reject(e);
     }
   });
 }
+
+// =====================
+// Sync scheduler / pull
+// =====================
 function scheduleCloudSave(delayMs = 1500) {
   if (__isRestoring) return;
-
   localStorage.setItem("__flow_localDirtyAt", new Date().toISOString());
 
   clearTimeout(__syncTimer);
@@ -611,22 +611,13 @@ async function pullIfNewer() {
 
     const cloudAt = parseIso(cloud.savedAt);
     const localAt = parseIso(localStorage.getItem("__flow_lastPulledAt"));
-    console.log("[PULL] times", {
-      cloudAt,
-      localAt,
-      cloudSavedAt: cloud.savedAt,
-      lastPulledAt: localStorage.getItem("__flow_lastPulledAt")
-    });
+    console.log("[PULL] times", { cloudAt, localAt, cloudSavedAt: cloud.savedAt, lastPulledAt: localStorage.getItem("__flow_lastPulledAt") });
 
-    if (cloudAt && localAt && cloudAt <= localAt) {
-      console.log("[PULL] blocked: cloudAt <= localAt");
-      return;
-    }
+    if (cloudAt <= localAt) { console.log("[PULL] blocked: cloudAt <= localAt"); return; }
 
     const dirtyRaw = localStorage.getItem("__flow_localDirtyAt");
     const dirtyAt = parseIso(dirtyRaw);
     console.log("[PULL] dirty", { dirtyRaw, dirtyAt });
-
     if (dirtyAt) { console.log("[PULL] blocked: dirtyAt exists"); return; }
 
     __isRestoring = true;
@@ -634,17 +625,19 @@ async function pullIfNewer() {
     localStorage.setItem("__flow_lastPulledAt", cloud.savedAt || new Date().toISOString());
     console.log("[PULL] imported, set __flow_lastPulledAt =", localStorage.getItem("__flow_lastPulledAt"));
 
-    // ★pull後にUIへ反映（ここが無いと見た目だけ古いことがある）
-    tasks = safeJsonParse("tasks", []);
-    daily = safeJsonParse("daily", daily);
-    viewMode = localStorage.getItem("viewMode") || "today";
-    currentMood = Number(localStorage.getItem("mood") || 2);
-    manuscript = loadManuscriptSafe();
+    // 復元後はUIを確実に最新化
+    try {
+      tasks = safeJsonParse("tasks", []);
+      daily = safeJsonParse("daily", []);
+      currentMood = Number(localStorage.getItem("mood") || 2);
+      viewMode = localStorage.getItem("viewMode") || "today";
+      manuscript = loadManuscriptSafe();
 
-    resetDailyIfNeeded();
-    renderDaily();
-    renderTasks();
-    renderManuscript();
+      resetDailyIfNeeded();
+      renderDaily();
+      renderTasks();
+      renderManuscript();
+    } catch {}
   } catch (e) {
     console.warn("auto pull failed", e);
   } finally {
@@ -653,11 +646,9 @@ async function pullIfNewer() {
 }
 
 function startAutoSync() {
-  // 二重起動防止
   if (window.__flowAutoSyncStarted) return;
   window.__flowAutoSyncStarted = true;
 
-  // 起動時に1回だけ同期（少し待ってから）
   setTimeout(() => {
     pullIfNewer().catch(() => {});
   }, 300);
@@ -671,7 +662,6 @@ function startAutoSync() {
 document.addEventListener("DOMContentLoaded", () => {
   refreshPassBanner();
 
-  // Mood buttons
   document.querySelectorAll("#moodButtons button").forEach((btn) => {
     btn.addEventListener("click", () => {
       currentMood = parseInt(btn.dataset.mood, 10);
@@ -681,7 +671,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Add Daily
   document.getElementById("addDaily")?.addEventListener("click", () => {
     const input = document.getElementById("dailyInput");
     const title = input?.value.trim() || "";
@@ -699,7 +688,6 @@ document.addEventListener("DOMContentLoaded", () => {
     scheduleCloudSave();
   });
 
-  // Add Task
   document.getElementById("addTask")?.addEventListener("click", () => {
     const titleEl = document.getElementById("taskInput");
     const deadlineEl = document.getElementById("deadlineInput");
@@ -730,7 +718,6 @@ document.addEventListener("DOMContentLoaded", () => {
     scheduleCloudSave();
   });
 
-  // View mode
   document.getElementById("showToday")?.addEventListener("click", () => {
     viewMode = "today";
     localStorage.setItem("viewMode", "today");
@@ -744,18 +731,15 @@ document.addEventListener("DOMContentLoaded", () => {
     scheduleCloudSave();
   });
 
-  // First render
   resetDailyIfNeeded();
   renderDaily();
   renderTasks();
   renderManuscript();
 
-  // Sync
   startAutoSync();
+
+  console.log("[BOOT] ready");
 });
 
-
-
-
-
-
+// marker
+console.log("SCRIPT END REACHED");
