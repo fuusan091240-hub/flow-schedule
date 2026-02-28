@@ -108,3 +108,52 @@ ul {
   padding-top: 12px;
   border-top: 1px solid rgba(0, 0, 0, 0.15);
 }
+
+/* --- Mobile baseline --- */
+html { font-size: 16px; } /* rem基準 */
+body {
+  margin: 0;
+  -webkit-text-size-adjust: 100%;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* 画面幅に合わせて、コンテンツを潰さない */
+.container, main, .app, #app {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 12px;
+}
+
+/* タップ領域を44px以上に（iOS推奨） */
+button, .btn, a, input, select, textarea {
+  min-height: 44px;
+  font-size: 16px; /* iOSの勝手ズーム防止にも効く */
+}
+
+/* ボタン類の押しやすさ */
+button, .btn, a {
+  padding: 12px 14px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* フォーム要素の押しやすさ */
+input, select, textarea {
+  padding: 10px 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* クリックしにくい小さいリンク対策 */
+a {
+  display: inline-block;
+  padding: 6px 4px;
+}
+
+/* スマホ時は余白と文字を少し増やす */
+@media (max-width: 480px) {
+  body { font-size: 18px; }
+  .container, main, .app, #app { padding: 16px; }
+  button, .btn, a, input, select, textarea { min-height: 48px; }
+}
