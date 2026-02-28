@@ -5,7 +5,7 @@
 // =====================
 console.log("FLOW script.js loaded", new Date().toISOString());
 
-const GAS_EXEC_URL = "https://script.google.com/macros/s/XXXXXX/exec";
+const GAS_EXEC_URL = "https://script.google.com/macros/s/AKfycbyTiMB9GFIcOmvrPbikwzxuoKWfrFhlgeITKADoXiGEzK-N50YD2xN1D206PZy7WzOT/exec";
 
 // =====================
 // Passphrase (合言葉)
@@ -651,3 +651,4 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
