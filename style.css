@@ -114,3 +114,13 @@ input[type="text"], input[type="date"], input[type="number"], textarea, select {
     min-height: 44px;
   }
 }
+/* 気分ボタンは1行固定（足りなければ横スクロール） */
+.mood-buttons {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.mood-buttons button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
