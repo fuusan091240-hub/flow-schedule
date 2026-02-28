@@ -3,6 +3,25 @@ console.log("FLOW script.js loaded", new Date().toISOString());
 const GAS_EXEC_URL = "https://script.google.com/macros/s/AKfycbyTiMB9GFIcOmvrPbikwzxuoKWfrFhlgeITKADoXiGEzK-N50YD2xN1D206PZy7WzOT/exec";
 
 // === 合言葉管理 ===
+function refreshPassBanner() {
+  const banner = document.getElementById("passBanner");
+  const btn = document.getElementById("setPassBtn");
+  if (!banner || !btn) return;
+
+  const has = !!getPassphrase();
+  banner.style.display = has ? "none" : "block";
+
+  btn.onclick = async () => {
+    const pass = prompt("クラウド同期用の合言葉を入力（この端末に保存されます）:");
+    if (!pass) return;
+    setPassphrase(pass);
+    refreshPassBanner();
+    if (typeof autoSync === "function") {
+      try { await autoSync(); } catch (e) {}
+    }
+  };
+}
+
 const FLOW_PASSPHRASE_KEY = "flow_passphrase";
 
 function getPassphrase() {
@@ -576,6 +595,10 @@ function importState(state) {
 }
 
 async function cloudSave() {
+  if (!getPassphrase()) {
+  refreshPassBanner();
+  return; // 合言葉が無いならクラウド送信しない
+}
   const payload = exportState();
 
 const keyHash = await getKeyHash();
@@ -713,11 +736,7 @@ startAutoSync();
 
 // ===== 起動時処理 =====
 document.addEventListener("DOMContentLoaded", async () => {
-  const ok = await ensurePassphrase();
-  if (!ok) return;
-
-  // 既存の自動同期があるなら呼ぶ
-  if (typeof autoSync === "function") {
-    await autoSync();
-  }
+  refreshPassBanner(); // 合言葉未設定なら帯を出す
+  // ここでpromptは出さない（スマホがブロックすることがある）
 });
+
