@@ -546,20 +546,22 @@ function cloudLoad() {
       const keyHash = await getKeyHash();
       const cb = "__flow_cb_" + Date.now();
 
-      window[cb] = (obj) => {
-        delete window[cb];
-        script.remove();
-        resolve(obj);
+      let done = false;
+      const finish = (err, obj) => {
+        if (done) return;
+        done = true;
+        try { delete window[cb]; } catch {}
+        try { script.remove(); } catch {}
+        if (err) reject(err);
+        else resolve(obj);
       };
+
+      window[cb] = (obj) => finish(null, obj);
 
       const script = document.createElement("script");
-      script.onerror = () => {
-        delete window[cb];
-        script.remove();
-        reject("cloudLoad failed");
-      };
+      script.onerror = () => finish("cloudLoad failed");
 
-      // URL生成も new URL() で事故らないよう統一
+      // ★URLを必ず壊れない形で構築する
       let src = withAction(GAS_EXEC_URL, "load");
       src = appendParam(src, "callback", cb);
       src = appendParam(src, "keyHash", keyHash);
@@ -567,12 +569,15 @@ function cloudLoad() {
 
       script.src = src;
       document.body.appendChild(script);
+
+      // ★“ロードできたけどcallbackが呼ばれない”系も拾う（10秒で諦める）
+      setTimeout(() => finish("cloudLoad timeout"), 10000);
+
     } catch (e) {
       reject(e);
     }
   });
 }
-
 function scheduleCloudSave(delayMs = 1500) {
   if (__isRestoring) return;
 
@@ -744,4 +749,5 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
 
