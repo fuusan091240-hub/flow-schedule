@@ -139,14 +139,13 @@ function escapeHtml(str) {
 function renderDaily() {
   const dailyList = document.getElementById("dailyList");
   if (!dailyList) return;
-
   dailyList.innerHTML = "";
-
+}
   daily.forEach((item) => {
     const li = document.createElement("li");
     li.className = "task-row";
     if (item.done) li.classList.add("task-done");
-
+  }
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = !!item.done;
@@ -182,9 +181,8 @@ function renderDaily() {
 function renderTasks() {
   const taskList = document.getElementById("taskList");
   if (!taskList) return;
-
   taskList.innerHTML = "";
-
+}
   const capacity = capacityMap[currentMood] ?? 5;
   const used = tasks.filter(t => t.done).reduce((sum, t) => sum + (Number(t.energy)||0), 0);
 
@@ -661,6 +659,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 console.log("SCRIPT END REACHED");
+
 
 
 
