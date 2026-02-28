@@ -558,6 +558,7 @@ function scheduleCloudSave(delayMs = 1500) {
 
 async function pullIfNewer() {
   if (!getPassphrase()) return;
+  if (__isRestoring) return;
   try {
     const cloud = await cloudLoad();
     if (!cloud) return;
@@ -581,12 +582,18 @@ async function pullIfNewer() {
 }
 
 function startAutoSync() {
-  // 初回だけ軽くpull（空の端末など）
-  setTimeout(() => { cloudPullIfNewer().catch(()=>{}); }, 300);
+  // ★ 二重起動防止（最重要）
+  if (window.__flowAutoSyncStarted) return;
+  window.__flowAutoSyncStarted = true;
 
-  setInterval(() => {
-    cloudPullIfNewer().catch(()=>{});
-  }, 10000);
+  // 初回だけ軽くpull（空の端末など）
+  setTimeout(() => { cloudPullIfNewer().catch(() => {}); }, 300);
+
+  // ★ intervalも1本に固定（保険）
+  if (window.__flowPullTimer) clearInterval(window.__flowPullTimer);
+  window.__flowPullTimer = setInterval(() => {
+    cloudPullIfNewer().catch(() => {});
+  }, 30000); // 30秒（節約＆連打防止）
 }
 
 // =====================
@@ -677,6 +684,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
 
 
 
