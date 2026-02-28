@@ -552,22 +552,31 @@ function scheduleCloudSave(delayMs = 1500) {
   }, delayMs);
 }
 async function pullIfNewer() {
-  if (!getPassphrase()) return;
-  if (__isRestoring) return;
+  if (!getPassphrase()) { console.log("[PULL] no passphrase"); return; }
+  if (__isRestoring) { console.log("[PULL] __isRestoring true"); return; }
+
   try {
     const cloud = await cloudLoad();
-    if (!cloud) return;
+    console.log("[PULL] cloud loaded:", !!cloud, cloud?.savedAt);
+
+    if (!cloud) { console.log("[PULL] cloud is null -> return"); return; }
 
     const cloudAt = parseIso(cloud.savedAt);
     const localAt = parseIso(localStorage.getItem("__flow_lastPulledAt"));
-    if (cloudAt <= localAt) return;
+    console.log("[PULL] times", { cloudAt, localAt, cloudSavedAt: cloud.savedAt, lastPulledAt: localStorage.getItem("__flow_lastPulledAt") });
 
-    const dirtyAt = parseIso(localStorage.getItem("__flow_localDirtyAt"));
-    if (dirtyAt) return;
+    if (cloudAt <= localAt) { console.log("[PULL] blocked: cloudAt <= localAt"); return; }
+
+    const dirtyRaw = localStorage.getItem("__flow_localDirtyAt");
+    const dirtyAt = parseIso(dirtyRaw);
+    console.log("[PULL] dirty", { dirtyRaw, dirtyAt });
+
+    if (dirtyAt) { console.log("[PULL] blocked: dirtyAt exists"); return; }
 
     __isRestoring = true;
     importState(cloud);
     localStorage.setItem("__flow_lastPulledAt", cloud.savedAt || new Date().toISOString());
+    console.log("[PULL] imported, set __flow_lastPulledAt =", localStorage.getItem("__flow_lastPulledAt"));
   } catch (e) {
     console.warn("auto pull failed", e);
   } finally {
@@ -676,6 +685,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
 
 
 
