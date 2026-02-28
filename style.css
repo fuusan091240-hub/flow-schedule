@@ -203,3 +203,19 @@ body { overflow-wrap: anywhere; word-break: break-word; }
     height: 28px;
   }
 }
+/* ===== 気分ボタンを1行固定 ===== */
+
+.mood-buttons {
+  display: flex;
+  flex-wrap: nowrap;      /* 折り返さない */
+  gap: 6px;
+  overflow-x: auto;       /* はみ出したら横スクロール */
+  -webkit-overflow-scrolling: touch;
+}
+
+.mood-buttons button {
+  flex: 0 0 auto;         /* 伸びない・縮まない */
+  white-space: nowrap;    /* テキスト改行しない */
+  padding: 8px 10px;
+  font-size: 14px;
+}
