@@ -140,12 +140,12 @@ function renderDaily() {
   const dailyList = document.getElementById("dailyList");
   if (!dailyList) return;
   dailyList.innerHTML = "";
-}
+
   daily.forEach((item) => {
     const li = document.createElement("li");
     li.className = "task-row";
     if (item.done) li.classList.add("task-done");
-  }
+
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = !!item.done;
@@ -154,7 +154,7 @@ function renderDaily() {
       saveDaily();
       renderDaily();
       scheduleCloudSave();
-      renderTasks();
+      renderTasks(); // 任意：表示連動
     });
 
     const text = document.createElement("span");
@@ -168,7 +168,6 @@ function renderDaily() {
       saveDaily();
       renderDaily();
       scheduleCloudSave();
-      renderTasks();
     });
 
     li.appendChild(checkbox);
@@ -659,6 +658,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 console.log("SCRIPT END REACHED");
+
 
 
 
