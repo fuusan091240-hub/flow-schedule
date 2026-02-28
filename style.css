@@ -1,126 +1,169 @@
-/* ===== FLOW schedule baseline (mobile-safe) ===== */
-
-:root {
-  --gap: 12px;
-  --radius: 12px;
-  --border: rgba(0,0,0,.12);
-  --bg: #ffffff;
-  --panel: #f5f7fb;
-  --text: #111;
+:root{
+  --bg:#fff;
+  --panel:#f6f7fb;
+  --border:rgba(0,0,0,.12);
+  --text:#111;
+  --radius:14px;
+  --gap:12px;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-/* 強制的に横書きに固定（縦書き事故の鎮火） */
-html, body, * {
+/* 変な縦書き事故の強制停止 */
+html, body, *{
   writing-mode: horizontal-tb !important;
   text-orientation: mixed !important;
 }
 
-html, body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
+*,
+*::before,
+*::after{ box-sizing:border-box; }
+
+html, body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
 }
 
-body {
-  margin: 0;
-  color: var(--text);
-  background: var(--bg);
-  font-size: 16px;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-size:16px;
+  line-height:1.5;
+  overflow-wrap:anywhere;
+  word-break:break-word;
 }
 
-img, input, textarea, select, button {
-  max-width: 100%;
+.container{
+  width:100%;
+  max-width:920px;
+  margin:0 auto;
+  padding:12px;
 }
 
-button, input, select, textarea {
-  font: inherit;
+h1{ margin: 8px 0 12px; font-size:22px; }
+h2{ margin: 0 0 10px; font-size:18px; }
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:12px;
+  margin:12px 0;
 }
 
-button {
-  cursor: pointer;
+.banner{
+  position:sticky;
+  top:0;
+  z-index:9999;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  padding:10px 12px;
+  border-radius: 0 0 12px 12px;
+}
+.banner__row{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+}
+.banner__text{ font-size:14px; }
+
+.capacity{
+  margin: 6px 0 10px;
+  opacity:.9;
 }
 
-/* “スマホで巨大化”しがちな要素の最低限リセット */
-input[type="checkbox"] {
-  width: 22px;
-  height: 22px;
+.row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  align-items:center;
 }
 
-/* コンテナ系（既存HTMLが何であっても横はみ出ししないように） */
-.container, main, #app, .app, .wrap {
-  width: 100%;
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 12px;
+.btn-row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin: 10px 0;
 }
 
-/* パネルっぽいブロック */
-.card, .panel, .box, section {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px;
+.btn{
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:#fff;
+  min-height:44px;
+  cursor:pointer;
 }
 
-/* ボタン群（折り返しは許可しつつ、詰める） */
-.btn-row, .buttons, .moods, .mood-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
+input[type="text"],
+input[type="date"],
+input[type="number"]{
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:#fff;
+  min-height:44px;
 }
 
-/* ボタンの見た目がバラバラでも最低限触りやすく */
-.btn-row button, .buttons button, .moods button, .mood-buttons button {
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: #fff;
+input[type="text"]{ flex: 1 1 240px; }
+input[type="date"]{ flex: 0 1 160px; }
+input[type="number"]{ flex: 0 1 120px; }
+
+.list{
+  list-style:none;
+  padding:0;
+  margin:10px 0 0;
 }
 
-/* 入力欄 */
-input[type="text"], input[type="date"], input[type="number"], textarea, select {
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: #fff;
+.task-row{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  padding:10px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#fff;
+  margin:8px 0;
 }
 
-/* タスク行・リスト行：横にはみ出さない */
-.task, .task-row, .daily-row, .daily-item, .item, .row, li {
-  max-width: 100%;
+.task-row input[type="checkbox"]{
+  width:24px;
+  height:24px;
+  flex:0 0 auto;
 }
 
-/* スマホ最適化 */
-@media (max-width: 480px) {
-  body { font-size: 16px; }
+.task-meta{ opacity:.65; margin-left:6px; font-size:0.95em; }
 
-  .container, main, #app, .app, .wrap {
-    padding: 10px;
-  }
+.task-done{ opacity:.6; }
+.task-disabled{ opacity:.45; }
 
-  /* 44pxタップ領域確保 */
-  button, input, select {
-    min-height: 44px;
-  }
+.manuscript-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:12px;
+  margin:12px 0;
 }
-/* 気分ボタンは1行固定（足りなければ横スクロール） */
-.mood-buttons {
-  flex-wrap: nowrap;
-  overflow-x: auto;
+
+/* 気分ボタン：1行固定（足りなければ横スクロール） */
+.mood-buttons{
+  display:flex;
+  flex-wrap:nowrap;
+  gap:8px;
+  overflow-x:auto;
   -webkit-overflow-scrolling: touch;
+  padding-bottom:4px;
 }
-.mood-buttons button {
-  flex: 0 0 auto;
-  white-space: nowrap;
+.mood-buttons .btn{
+  flex:0 0 auto;
+  white-space:nowrap;
+}
+
+/* スマホは行を縦に */
+@media (max-width: 480px){
+  .task-row{
+    align-items:flex-start;
+  }
 }
