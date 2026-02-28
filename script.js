@@ -2,6 +2,41 @@ console.log("FLOW script.js loaded", new Date().toISOString());
 
 const GAS_EXEC_URL = "https://script.google.com/macros/s/AKfycbyTiMB9GFIcOmvrPbikwzxuoKWfrFhlgeITKADoXiGEzK-N50YD2xN1D206PZy7WzOT/exec";
 
+// === 合言葉管理 ===
+const FLOW_PASSPHRASE_KEY = "flow_passphrase";
+
+function getPassphrase() {
+  return localStorage.getItem(FLOW_PASSPHRASE_KEY) || "";
+}
+
+function setPassphrase(pass) {
+  localStorage.setItem(FLOW_PASSPHRASE_KEY, pass);
+}
+
+async function sha256Hex(str) {
+  const enc = new TextEncoder();
+  const buf = await crypto.subtle.digest("SHA-256", enc.encode(str));
+  return [...new Uint8Array(buf)]
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+async function ensurePassphrase() {
+  if (getPassphrase()) return true;
+
+  const pass = prompt("クラウド同期用の合言葉を入力（この端末に保存されます）:");
+  if (!pass) return false;
+
+  setPassphrase(pass);
+  return true;
+}
+
+async function getKeyHash() {
+  const pass = getPassphrase();
+  if (!pass) throw new Error("合言葉が未設定です");
+  return await sha256Hex(pass);
+}
+
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let currentMood = parseInt(localStorage.getItem("mood")) || 2;
 let viewMode = "today";
@@ -543,14 +578,16 @@ function importState(state) {
 async function cloudSave() {
   const payload = exportState();
 
-  // CORSでレスポンスが読めない環境があるので no-cors で「送るだけ」にする
-  await fetch(`${GAS_EXEC_URL}?action=save`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-    mode: "no-cors"
-  });
-}
+const keyHash = await getKeyHash();
+
+await fetch(`${GAS_EXEC_URL}?action=save`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    ...payload,
+    keyHash
+  })
+});
 
 function cloudLoad() {
   return new Promise((resolve, reject) => {
@@ -673,3 +710,14 @@ renderDaily();
 renderTasks();
 renderManuscript();
 startAutoSync();
+
+// ===== 起動時処理 =====
+document.addEventListener("DOMContentLoaded", async () => {
+  const ok = await ensurePassphrase();
+  if (!ok) return;
+
+  // 既存の自動同期があるなら呼ぶ
+  if (typeof autoSync === "function") {
+    await autoSync();
+  }
+});
