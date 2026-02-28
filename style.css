@@ -1,0 +1,110 @@
+/* ===== FLOW schedule styles ===== */
+
+/* 全体 */
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", Arial, sans-serif;
+  margin: 24px;
+  line-height: 1.5;
+}
+
+/* セクション見出しの余白 */
+h1 {
+  margin: 0 0 12px;
+}
+h2 {
+  margin: 20px 0 10px;
+}
+
+/* 今日の許容量表示 */
+#capacityDisplay {
+  margin: 8px 0 16px;
+  font-weight: 600;
+}
+
+/* 入力エリア */
+input[type="text"],
+input[type="date"],
+input[type="number"] {
+  padding: 6px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+}
+
+button {
+  padding: 6px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* リスト */
+ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 10px 0 0;
+}
+
+/* 1行（Daily/タスク共通） */
+.task-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 4px;
+}
+
+/* 左側（チェック＋本文）を固める */
+.task-row > div,
+.task-row > span {
+  flex: 1;
+}
+
+/* メタ情報 */
+.task-meta {
+  font-size: 0.9em;
+  opacity: 0.85;
+  margin-left: 6px;
+}
+
+/* できない（今の許容量を超える）タスク */
+.task-disabled {
+  opacity: 0.35;
+}
+
+/* 完了タスク */
+.task-done {
+  text-decoration: line-through;
+  opacity: 0.45;
+}
+
+/* Daily セクション */
+#daily-section {
+  margin-top: 16px;
+  padding: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  background: rgba(0, 150, 255, 0.05);
+  border-radius: 8px;
+}
+
+/* Daily入力行の余白 */
+#daily-section > div {
+  margin-bottom: 8px;
+}
+
+/* タスクセクションも少し区切る（任意） */
+#task-section {
+  margin-top: 18px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+#manuscript-section {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+}

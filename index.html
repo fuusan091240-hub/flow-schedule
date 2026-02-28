@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>FLOW schedule</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>FLOW schedule</h1>
+
+  <div id="mood-section">
+<p id="capacityDisplay"></p>
+    <h2>今日の気分</h2>
+    <button data-mood="0">虚無</button>
+    <button data-mood="1">低</button>
+    <button data-mood="2">普通</button>
+    <button data-mood="3">イライラ</button>
+    <button data-mood="4">ハイ</button>
+    <button data-mood="5">無敵</button>
+  </div>
+<div id="daily-section">
+  <h2>Daily</h2>
+
+  <div>
+    <input type="text" id="dailyInput" placeholder="Daily項目（例：5分リセット）">
+    <button id="addDaily">追加</button>
+  </div>
+
+  <ul id="dailyList"></ul>
+</div>
+
+<div>
+  <button id="showToday">今日やる</button>
+  <button id="showAll">すべて</button>
+</div>
+
+  <div id="task-section">
+    <h2>タスク</h2>
+    <input type="text" id="taskInput" placeholder="タスク名">
+    <input type="date" id="deadlineInput">
+    <input type="number" id="energyInput" min="0" max="5" placeholder="消耗度">
+    <button id="addTask">追加</button>
+
+    <ul id="taskList"></ul>
+  </div>
+
+<div id="manuscript-section"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
