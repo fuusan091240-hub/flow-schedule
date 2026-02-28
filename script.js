@@ -5,7 +5,7 @@
 // =====================
 console.log("FLOW script.js loaded", new Date().toISOString());
 
-const GAS_EXEC_URL = "https://script.google.com/macros/s/AKfycbyTiMB9GFIcOmvrPbikwzxuoKWfrFhlgeITKADoXiGEzK-N50YD2xN1D206PZy7WzOT/exec";
+const GAS_EXEC_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AY5xjrQJ0fNImviyG1JwAmcMRjC2ZFWJJp7KaneeCYsb4DPRrxdNAHWdadMi2QDmxM26pDVVbgU9Wjhaui6cPG1CCOpfFFCWqXJt3SAjioRUl2CAXuuqCr3aw554VChPppcRJe-uTii2cZY-G7fyJB9V4odQO9Z5Ix-eqCFzjgb7JcQ9UCRGBIuYqOhkopnlSImpyLGvxhNnR08vR3bouuFrdUoWVxLe6m3Jh1_G7cI21XkumgI01WHsD461mTRDZUBeFN9I5uB_X97NBMbA6sa4EHW527qRYovI6ubzPJoC-NQwE1Eq3y4&lib=MiD0L96dLXag0lRHKSz6xxmDs_wf-hvwW";
 
 // =====================
 // Passphrase (合言葉)
@@ -685,6 +685,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
 
 
 
