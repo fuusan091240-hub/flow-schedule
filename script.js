@@ -519,9 +519,8 @@ function parseIso(t) {
 let __syncTimer = null;
 let __isRestoring = false;
 
-// ローカル変更が入ったら「あとで保存」を予約（連打しても1回にまとめる）
 function scheduleCloudSave(delayMs = 1500) {
-  if (__isRestoring) return; // 復元中は保存しない（ループ防止）
+  if (__isRestoring) return;
   localStorage.setItem("__flow_localDirtyAt", new Date().toISOString());
 
   clearTimeout(__syncTimer);
@@ -561,18 +560,15 @@ async function pullIfNewer() {
 }
 
 function startAutoSync() {
-  // ★ 二重起動防止（最重要）
   if (window.__flowAutoSyncStarted) return;
   window.__flowAutoSyncStarted = true;
 
-  // 初回だけ軽くpull（空の端末など）
-  setTimeout(() => { cloudPullIfNewer().catch(() => {}); }, 300);
+  setTimeout(() => { pullIfNewer().catch(()=>{}); }, 300);
 
-  // ★ intervalも1本に固定（保険）
   if (window.__flowPullTimer) clearInterval(window.__flowPullTimer);
   window.__flowPullTimer = setInterval(() => {
-    cloudPullIfNewer().catch(() => {});
-  }, 30000); // 30秒（節約＆連打防止）
+    pullIfNewer().catch(()=>{});
+  }, 30000);
 }
 
 // =====================
@@ -664,6 +660,7 @@ document.addEventListener("DOMContentLoaded", () => {
   startAutoSync();
 });
 
+console.log("SCRIPT END REACHED");
 
 
 
