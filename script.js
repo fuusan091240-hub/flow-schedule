@@ -6,7 +6,7 @@
 console.log("FLOW script.js loaded", new Date().toISOString());
 
 // ★あなたの方で XXXXX に置き換えOK
-const GAS_EXEC_URL = "https://script.google.com/macros/s/AKfycbyTiMB9GFIcOmvrPbikwzxuoKWfrFhlgeITKADoXiGEzK-N50YD2xN1D206PZy7WzOT/exec";
+const GAS_EXEC_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AY5xjrQd3Z3vpMequzfVAVny3KiWGxvW4oujSBZzn1OXni7YbNpbHPYkGw16ToV7OIuRHOP4qMvj5gtiBxWdWt5aDg5UzYU4wIgUuoHwWZQ3_yn9bIXcV8wmTiF3iaZSAsnMSG-uxHQSxpnrx-UI06RctKEcOAJiVsXti8A7YADbc2LN6I8PvfpxFXxRsroeQCczEZ7artTWu8HpBtA5y4PSOS7LQuCrNoh2x1gZT8g4AwpYSOIuWl46w7z5AMu7A4G9YTijej2RFqSq20qVj_HvyrQ-ajvnk0q55LNEtmwVc7rIa1s0MPM&lib=MiD0L96dLXag0lRHKSz6xxmDs_wf-hvwW";
 
 /**
  * URLへクエリを安全に付与する（? / & 二重事故を防止）
@@ -744,3 +744,4 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
