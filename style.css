@@ -153,7 +153,8 @@ a {
 
 /* スマホ時は余白と文字を少し増やす */
 @media (max-width: 480px) {
-  body { font-size: 18px; }
+  body { font-size: 16px; } /* まず普通に戻す */
+}
   .container, main, .app, #app { padding: 16px; }
-  button, .btn, a, input, select, textarea { min-height: 48px; }
+  button, .btn, a, input, select, textarea { min-height: 44px; }
 }
