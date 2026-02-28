@@ -154,7 +154,7 @@ function renderDaily() {
       saveDaily();
       renderDaily();
       scheduleCloudSave();
-      renderTasks(); // 任意：表示連動
+      renderTasks();
     });
 
     const text = document.createElement("span");
@@ -658,6 +658,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 console.log("SCRIPT END REACHED");
+console.log("SCRIPT OK");
 
 
 
