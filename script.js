@@ -490,7 +490,8 @@ async function cloudSave() {
 
   const payload = exportState();
   const keyHash = await getKeyHash();
-
+console.log("[SYNC] keyHash:", keyHash);
+  
 // CORS回避：preflightを起こしにくい形で送る
 await fetch(`${GAS_EXEC_URL}?action=save`, {
   method: "POST",
@@ -675,6 +676,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
 
 
 
