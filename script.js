@@ -467,16 +467,20 @@ function importState(state) {
 }
 
 async function cloudSave() {
-  if (!getPassphrase()) { refreshPassBanner(); return; }
+  if (!getPassphrase()) {
+    refreshPassBanner();
+    return;
+  }
+
   const payload = exportState();
   const keyHash = await getKeyHash();
 
   await fetch(`${GAS_EXEC_URL}?action=save`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...payload, keyHash }),
+    body: JSON.stringify({ ...payload, keyHash })
   });
-}
+} 
 
 function cloudLoad() {
   return new Promise(async (resolve, reject) => {
@@ -516,8 +520,7 @@ let __syncTimer = null;
 let __isRestoring = false;
 
 function scheduleCloudSave(delayMs = 1500) {
-
-  // ★ 暴走防止ガード（2秒以内の連続保存を無視）
+  // ★ 暴走防止ガード：2秒以内の連続予約を捨てる
   const now = Date.now();
   const last = Number(localStorage.getItem("__flow_saveScheduledAt") || 0);
   if (now - last < 2000) return;
@@ -553,7 +556,8 @@ function scheduleCloudSave(delayMs = 1500) {
   }, delayMs);
 }
 
-async function cloudPullIfNewer() {
+async function pullIfNewer() {
+  if (!getPassphrase()) return;
   try {
     const cloud = await cloudLoad();
     if (!cloud) return;
@@ -673,5 +677,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
 
 
