@@ -7,6 +7,10 @@ console.log("FLOW script.js loaded", new Date().toISOString());
 
 const GAS_EXEC_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AY5xjrQJ0fNImviyG1JwAmcMRjC2ZFWJJp7KaneeCYsb4DPRrxdNAHWdadMi2QDmxM26pDVVbgU9Wjhaui6cPG1CCOpfFFCWqXJt3SAjioRUl2CAXuuqCr3aw554VChPppcRJe-uTii2cZY-G7fyJB9V4odQO9Z5Ix-eqCFzjgb7JcQ9UCRGBIuYqOhkopnlSImpyLGvxhNnR08vR3bouuFrdUoWVxLe6m3Jh1_G7cI21XkumgI01WHsD461mTRDZUBeFN9I5uB_X97NBMbA6sa4EHW527qRYovI6ubzPJoC-NQwE1Eq3y4&lib=MiD0L96dLXag0lRHKSz6xxmDs_wf-hvwW";
 
+function withAction(url, action) {
+  return url + (url.includes("?") ? "&" : "?") + "action=" + encodeURIComponent(action);
+}
+
 // =====================
 // Passphrase (合言葉)
 // =====================
@@ -493,7 +497,7 @@ async function cloudSave() {
 console.log("[SYNC] keyHash:", keyHash);
   
 // CORS回避：preflightを起こしにくい形で送る
-await fetch(`${GAS_EXEC_URL}?action=save`, {
+await fetch(withAction(GAS_EXEC_URL, "save"), {
   method: "POST",
   body: JSON.stringify({ ...payload, keyHash })
 });
@@ -520,7 +524,7 @@ function cloudLoad() {
         reject("cloudLoad failed");
       };
 
-      script.src = `${GAS_EXEC_URL}?action=load&callback=${cb}&keyHash=${encodeURIComponent(keyHash)}&t=${Date.now()}`;
+      script.src = `${withAction(GAS_EXEC_URL, "load")}&callback=${cb}&keyHash=${encodeURIComponent(keyHash)}&t=${Date.now()}`;
       document.body.appendChild(script);
     } catch (e) {
       reject(e);
@@ -685,6 +689,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
 
 
 
