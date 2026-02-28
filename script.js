@@ -562,15 +562,15 @@ function cloudLoad() {
       script.onerror = () => finish("cloudLoad failed");
 
       // ★URLを必ず壊れない形で構築する
-      let src = withAction(GAS_EXEC_URL, "load");
-      src = appendParam(src, "callback", cb);
-      src = appendParam(src, "keyHash", keyHash);
-      src = appendParam(src, "t", String(Date.now()));
+let src = withAction(GAS_EXEC_URL, "load");
+src = appendParam(src, "callback", cb);
+src = appendParam(src, "keyHash", keyHash);
+src = appendParam(src, "t", String(Date.now()));
 
-      // （src を組み立てた直後）
-window.__flow_lastCloudLoadSrc = src;              // ★必ず残る
-console.log("[cloudLoad] src =", src);             // これは見えたらラッキー
+// ★この行は「src完成後」に置く（ここ以外に置かない）
+window.__flow_lastCloudLoadSrc = src;
 
+// ★これでscriptロード開始
 script.src = src;
 document.body.appendChild(script);
 
@@ -753,6 +753,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
 
 
 
