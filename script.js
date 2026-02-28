@@ -516,6 +516,28 @@ let __syncTimer = null;
 let __isRestoring = false;
 
 function scheduleCloudSave(delayMs = 1500) {
+
+  // ★ 暴走防止ガード（2秒以内の連続保存を無視）
+  const now = Date.now();
+  const last = Number(localStorage.getItem("__flow_saveScheduledAt") || 0);
+  if (now - last < 2000) return;
+  localStorage.setItem("__flow_saveScheduledAt", String(now));
+
+  if (__isRestoring) return;
+
+  localStorage.setItem("__flow_localDirtyAt", new Date().toISOString());
+
+  clearTimeout(__syncTimer);
+  __syncTimer = setTimeout(async () => {
+    try {
+      await cloudSave();
+      localStorage.setItem("__flow_lastSaveAt", new Date().toISOString());
+      localStorage.removeItem("__flow_localDirtyAt");
+    } catch (e) {
+      console.warn("auto save failed", e);
+    }
+  }, delayMs);
+}
   if (__isRestoring) return;
   localStorage.setItem("__flow_localDirtyAt", new Date().toISOString());
 
@@ -651,4 +673,5 @@ document.addEventListener("DOMContentLoaded", () => {
   // Sync
   startAutoSync();
 });
+
 
