@@ -172,3 +172,28 @@ input[type="number"]{ flex: 0 1 120px; }
 #dailyList .task-row button {
   margin-left: auto;
 }
+/* ===== Daily: ゴミ箱を確実に右端へ ===== */
+
+/* Daily行は必ず横並びにする */
+#dailyList .task-row{
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+}
+
+/* 真ん中のテキストが伸びてスペースを作る */
+#dailyList .task-row > span{
+  flex: 1 1 auto !important;
+}
+
+/* ゴミ箱ボタンは右端へ押し出す */
+#dailyList .task-row > button{
+  margin-left: auto !important;
+}
+
+/* もし何かの影響で縦積みになっても右端に寄せる保険 */
+@media (max-width: 480px){
+  #dailyList .task-row > button{
+    align-self: flex-end !important;
+  }
+}
