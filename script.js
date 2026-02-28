@@ -45,7 +45,7 @@ function refreshPassBanner() {
     setPassphrase(pass);
     refreshPassBanner();
     // 初回だけ軽く同期を走らせる（失敗しても落とさない）
-    try { await cloudPullIfNewer(); } catch {}
+    try { await pullIfNewer(); } catch {}
   };
 }
 
@@ -475,11 +475,11 @@ async function cloudSave() {
   const payload = exportState();
   const keyHash = await getKeyHash();
 
-  await fetch(`${GAS_EXEC_URL}?action=save`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...payload, keyHash })
-  });
+// CORS回避：preflightを起こしにくい形で送る
+await fetch(`${GAS_EXEC_URL}?action=save`, {
+  method: "POST",
+  body: JSON.stringify({ ...payload, keyHash })
+});
 } 
 
 function cloudLoad() {
@@ -661,6 +661,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 console.log("SCRIPT END REACHED");
+
 
 
 
