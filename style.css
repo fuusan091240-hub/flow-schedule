@@ -167,3 +167,8 @@ input[type="number"]{ flex: 0 1 120px; }
     align-items:flex-start;
   }
 }
+
+/* Daily の削除ボタンを右寄せ */
+#dailyList .task-row button {
+  margin-left: auto;
+}
