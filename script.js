@@ -676,8 +676,7 @@ document.addEventListener("DOMContentLoaded", () => {
   startAutoSync();
 });
 
-console.log("SCRIPT END REACHED");
-console.log("SCRIPT OK");
+
 
 
 
