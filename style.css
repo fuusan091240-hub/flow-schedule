@@ -99,12 +99,14 @@ h2{ margin: 0 0 10px; font-size:18px; }
 
 input[type="text"],
 input[type="date"],
-input[type="number"]{
+input[type="number"],
+textarea {
   padding:10px 12px;
   border-radius:12px;
   border:1px solid var(--border);
   background:#fff;
   min-height:44px;
+  font-size:16px;          /* ★iOSズーム防止 */
 }
 
 input[type="text"]{ flex: 1 1 240px; }
@@ -197,3 +199,4 @@ input[type="number"]{ flex: 0 1 120px; }
     align-self: flex-end !important;
   }
 }
+
