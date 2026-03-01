@@ -457,6 +457,16 @@ function renderManuscript() {
   });
 }
 
+function saveMoodLog(mood) {
+  const key = todayKey();
+  const log = safeJsonParse("moodLog", {});
+  log[key] = {
+    mood: Number(mood),
+    updatedAt: new Date().toISOString()
+  };
+  localStorage.setItem("moodLog", JSON.stringify(log));
+}
+
 // =====================
 // Cloud sync (export/import)
 // =====================
@@ -666,6 +676,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => {
       currentMood = parseInt(btn.dataset.mood, 10);
       localStorage.setItem("mood", String(currentMood));
+      saveMoodLog(currentMood);
       renderTasks();
       scheduleCloudSave();
     });
@@ -743,4 +754,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // marker
 console.log("SCRIPT END REACHED");
+
 
