@@ -467,6 +467,44 @@ function saveMoodLog(mood) {
   localStorage.setItem("moodLog", JSON.stringify(log));
 }
 
+function renderMoodChart() {
+  const canvas = document.getElementById("moodChart");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+
+  const log = safeJsonParse("moodLog", {});
+  const dates = Object.keys(log).sort().slice(-7);
+
+  const labels = dates.map(d => d.slice(5)); // MM-DD表示
+  const values = dates.map(d => log[d].mood);
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        tension: 0.3,
+        borderWidth: 2,
+        pointRadius: 4
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          min: 0,
+          max: 5,
+          ticks: { stepSize: 1 }
+        }
+      },
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  });
+}
+
 // =====================
 // Cloud sync (export/import)
 // =====================
@@ -747,6 +785,8 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTasks();
   renderManuscript();
 
+renderMoodChart();
+  
   startAutoSync();
 
   console.log("[BOOT] ready");
@@ -754,5 +794,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
