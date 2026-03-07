@@ -496,40 +496,53 @@ function renderMoodChart() {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  const log = safeJsonParse("moodLog", {});
-  const dates = Object.keys(log).sort().slice(-7);
+const log = safeJsonParse("moodLog", {});
+const dates = Object.keys(log).sort().slice(-7);
 
-  const labels = dates.map(d => d.slice(5));
-  const values = dates.map(d => log[d].mood);
+const labels = dates.map(d => d.slice(5));
+const moodValues = dates.map(d => log[d].mood ?? null);
+const energyValues = dates.map(d => log[d].energy ?? null);
 
   if (moodChartInstance) {
     moodChartInstance.destroy();
   }
 
   moodChartInstance = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels,
-      datasets: [{
-        data: values,
+  type: "line",
+  data: {
+    labels,
+    datasets: [
+      {
+        label: "気分",
+        data: moodValues,
         tension: 0.3,
         borderWidth: 2,
-        pointRadius: 4
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          min: 0,
-          max: 5,
-          ticks: { stepSize: 1 }
-        }
+        pointRadius: 4,
+        borderColor: "#4a90e2"
       },
-      plugins: {
-        legend: { display: false }
+      {
+        label: "使用エネルギー",
+        data: energyValues,
+        tension: 0.3,
+        borderWidth: 2,
+        pointRadius: 4,
+        borderColor: "#f5a623"
       }
+    ]
+  },
+  options: {
+    scales: {
+      y: {
+        min: 0,
+        max: 6,
+        ticks: { stepSize: 1 }
+      }
+    },
+    plugins: {
+      legend: { display: true }
     }
-  });
+  }
+});
 }
 // =====================
 // Cloud sync (export/import)
@@ -824,6 +837,7 @@ document.querySelectorAll("#moodButtons button").forEach((btn) => {
 });
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
