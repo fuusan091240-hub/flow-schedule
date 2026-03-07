@@ -93,28 +93,40 @@ let viewMode = localStorage.getItem("viewMode") || "today";
 let dailyLastReset = localStorage.getItem("dailyLastReset") || "";
 
 function loadManuscriptSafe() {
-  const m = safeJsonParse("manuscript", {});
-  const ok =
-    m && typeof m === "object" &&
-    typeof m.title === "string" &&
-    typeof m.deadline === "string" &&
-    Number.isFinite(Number(m.total)) &&
-    Number.isFinite(Number(m.progress));
+  try {
+    const raw = JSON.parse(localStorage.getItem("manuscript"));
+    if (!raw || typeof raw !== "object") {
+      return {
+        title: "原稿",
+        deadline: "2026-04-28",
+        total: 60,
+        progress: 0,
+        startPage: 3
+      };
+    }
 
-  return ok ? {
-    title: m.title,
-    deadline: m.deadline,
-    total: Number(m.total),
-    progress: Number(m.progress),
-  } : {
-    title: "原稿",
-    deadline: "2026-04-28",
-    total: 60,
-    progress: 0
-  };
+    return {
+      title: raw.title || "原稿",
+      deadline: raw.deadline || "2026-04-28",
+      total: Number(raw.total) || 60,
+      progress: Number(raw.progress) || 0,
+      startPage: Number(raw.startPage) || 3
+    };
+  } catch {
+    return {
+      title: "原稿",
+      deadline: "2026-04-28",
+      total: 60,
+      progress: 0,
+      startPage: 3
+    };
+  }
 }
 
 let manuscript = loadManuscriptSafe();
+
+
+
 let manuscriptEditMode = false;
 
 const capacityMap = { 0:2, 1:3, 2:5, 3:3, 4:6, 5:5 };
@@ -794,6 +806,7 @@ renderMoodChart();
 
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
