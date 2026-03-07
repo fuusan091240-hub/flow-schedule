@@ -357,6 +357,7 @@ function renderTasks() {
   });
 
   renderManuscript();
+  renderMoodChart();
 }
 
 function renderManuscript() {
@@ -837,6 +838,7 @@ document.querySelectorAll("#moodButtons button").forEach((btn) => {
 });
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
