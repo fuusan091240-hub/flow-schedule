@@ -6,6 +6,14 @@ const manuscript = JSON.parse(localStorage.getItem("manuscript")) || {
   startPage: 3
 };
 
+// startPage が無い古いデータ対策
+if (!Number.isFinite(Number(manuscript.startPage))) {
+  manuscript.startPage = 3;
+}
+if (!Number.isFinite(Number(manuscript.total))) {
+  manuscript.total = 0;
+}
+
 let checklist = JSON.parse(localStorage.getItem("checklist")) || [];
 
 function saveChecklist() {
