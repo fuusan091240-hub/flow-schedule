@@ -199,97 +199,68 @@ input[type="number"]{ flex: 0 1 120px; }
     align-self: flex-end !important;
   }
 }
-/* ===== manuscript ===== */
+/* ===== manuscript page ===== */
 
-.manuscript-table {
-  width:100%;
-  border-collapse:collapse;
-  margin-top:10px;
+body{
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 24px;
+  box-sizing: border-box;
 }
 
-.manuscript-table th {
-  text-align:left;
-  padding:6px;
-  width:90px;
+h2{
+  margin-bottom: 20px;
 }
-
-.manuscript-table td {
-  padding:6px;
-}
-
-.manuscript-table input {
-  width:100%;
-  box-sizing:border-box;
-}
-
-.manuscript-actions{
-  margin-top:10px;
-}
-
-.manuscript-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(70px,1fr));
-  gap:8px;
-  margin-top:12px;
-}
-
-.page-box{
-  border:1px solid #ccc;
-  padding:6px;
-  text-align:center;
-  border-radius:6px;
-  background:#fafafa;
-}
-
-.page-box input{
-  margin-top:4px;
-}
-
-.page-done{
-  background:#dff5df;
-}
-
-/* ===== 原稿チェックシート ===== */
 
 #pageTiles{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,40px);
-  gap:6px;
-  margin-bottom:20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 44px));
+  gap: 8px;
+  margin: 0 0 24px 0;
+  justify-content: start;
 }
 
 #pageTiles span{
-  width:40px;
-  height:40px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border:1px solid #ccc;
-  border-radius:6px;
-  background:#fafafa;
-  font-size:0.9em;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fafafa;
+  font-size: 14px;
+  line-height: 1;
+}
+
+#checklistTable{
+  width: 100%;
 }
 
 #checklistTable > div{
-  display:grid;
-  grid-template-columns:70px 90px 90px 90px 90px 1fr;
-  align-items:center;
-  gap:8px;
-  padding:6px;
-  border-bottom:1px solid #eee;
+  display: grid;
+  grid-template-columns: 56px 86px 86px 86px 86px minmax(120px, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+  box-sizing: border-box;
 }
 
 #checklistTable > div:nth-child(even){
-  background:#fafafa;
+  background: #fafafa;
+}
+
+#checklistTable label{
+  font-size: 14px;
+  white-space: nowrap;
 }
 
 #checklistTable input[type="text"]{
-  width:100%;
-  box-sizing:border-box;
-}
-body{
-  max-width:800px;
-  margin:40px auto;
-  padding:0 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
