@@ -219,28 +219,23 @@ input[type="number"]{ flex: 0 1 120px; }
 }
 
 .manuscript-page #pageTiles{
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(52px, 52px));
-  gap: 8px;
-  margin-bottom: 24px;
-  padding: 0 16px;
-  justify-content: center;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,52px);
+  gap:8px;
+  justify-content:center;
+  margin-bottom:24px;
 }
 
 .manuscript-page #pageTiles span{
-  width: 52px;
-  height: 52px;
-  margin: 0;
-  padding: 0;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background: #fafafa;
-  font-size: 20px;
-  line-height: 1;
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #ccc;
+  border-radius:6px;
+  background:#fafafa;
+  font-size:16px;
 }
 
 .manuscript-page #checklistTable{
@@ -306,4 +301,5 @@ input[type="number"]{ flex: 0 1 120px; }
     margin-top: 6px;
   }
 }
+
 
