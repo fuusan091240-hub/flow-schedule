@@ -723,16 +723,13 @@ function startAutoSync() {
 // Boot (DOM ready)
 // =====================
 document.addEventListener("DOMContentLoaded", () => {
-  refreshPassBanner();
+  resetDailyIfNeeded();
+  renderDaily();
+  renderTasks();
+  renderManuscript();
 
-  document.querySelectorAll("#moodButtons button").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      currentMood = parseInt(btn.dataset.mood, 10);
-      localStorage.setItem("mood", String(currentMood));
-      saveMoodLog(currentMood);
-      renderTasks();
-      scheduleCloudSave();
-    });
+  console.log("[BOOT] minimal ready");
+});
   });
 
   document.getElementById("addDaily")?.addEventListener("click", () => {
@@ -809,6 +806,7 @@ renderMoodChart();
 
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
