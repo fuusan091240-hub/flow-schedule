@@ -220,7 +220,7 @@ input[type="number"]{ flex: 0 1 120px; }
 
 .manuscript-page #pageTiles{
   display:grid;
-  grid-template-columns:repeat(auto-fill,52px);
+  grid-template-columns:repeat(auto-fill,40px);
   gap:8px;
   justify-content:center;
   margin-bottom:24px;
@@ -236,6 +236,7 @@ input[type="number"]{ flex: 0 1 120px; }
   border-radius:6px;
   background:#fafafa;
   font-size:16px;
+  line-height: 1;
 }
 
 .manuscript-page #checklistTable{
@@ -303,6 +304,7 @@ input[type="number"]{ flex: 0 1 120px; }
     margin-top: 6px;
   }
 }
+
 
 
 
