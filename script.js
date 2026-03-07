@@ -546,11 +546,12 @@ function importState(state) {
 
   const m = d.manuscript || {};
   const safeManuscript = {
-    title: typeof m.title === "string" ? m.title : "原稿",
-    deadline: typeof m.deadline === "string" ? m.deadline : todayKey(),
-    total: Number.isFinite(Number(m.total)) ? Number(m.total) : 60,
-    progress: Number.isFinite(Number(m.progress)) ? Number(m.progress) : 0,
-  };
+  title: typeof m.title === "string" ? m.title : "原稿",
+  deadline: typeof m.deadline === "string" ? m.deadline : todayKey(),
+  total: Number.isFinite(Number(m.total)) ? Number(m.total) : 60,
+  progress: Number.isFinite(Number(m.progress)) ? Number(m.progress) : 0,
+  startPage: Number.isFinite(Number(m.startPage)) ? Number(m.startPage) : 3,
+};
   if (safeManuscript.progress < 0) safeManuscript.progress = 0;
   if (safeManuscript.progress > safeManuscript.total) safeManuscript.progress = safeManuscript.total;
 
@@ -806,6 +807,7 @@ renderMoodChart();
 
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
