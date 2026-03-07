@@ -252,18 +252,22 @@ input[type="number"]{ flex: 0 1 120px; }
 /* ===== 原稿チェックシート ===== */
 
 #pageTiles{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,40px);
+  gap:6px;
   margin-bottom:20px;
 }
 
 #pageTiles span{
-  display:inline-block;
-  min-width:36px;
-  text-align:center;
-  margin:4px;
-  padding:6px 10px;
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   border:1px solid #ccc;
   border-radius:6px;
   background:#fafafa;
+  font-size:0.9em;
 }
 
 #checklistTable > div{
@@ -288,3 +292,4 @@ body{
   margin:40px auto;
   padding:0 20px;
 }
+
