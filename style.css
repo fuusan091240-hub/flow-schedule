@@ -436,3 +436,11 @@ input[type="number"]{
   color:#666;
   white-space:nowrap;
 }
+
+.task-row > button{
+  width:36px;
+  height:36px;
+  min-width:36px;
+  padding:0;
+  font-size:16px;
+}
