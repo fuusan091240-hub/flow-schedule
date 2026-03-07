@@ -371,26 +371,44 @@ function renderManuscript() {
   const pagesPerDay = (remaining / daysLeft).toFixed(1);
 
   if (!manuscriptEditMode) {
-    container.innerHTML = `
-      <div class="manuscript-card">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-          <h3 style="margin:0;">${escapeHtml(manuscript.title)}（${manuscript.deadline}締切）</h3>
-          <button id="manuscriptEdit" type="button">✏</button>
-        </div>
+container.innerHTML = `
+<div class="manuscript-card">
 
-        <div>進捗：${manuscript.progress} / ${manuscript.total}</div>
-        <div>残り：${remaining}</div>
-        <div style="opacity:0.6;font-size:0.9em;">
-          目安：あと${daysLeft}日 → 1日あたり ${pagesPerDay}p
-        </div>
+<h3>原稿設定</h3>
 
-        <div style="margin-top:8px;">
-          <button id="manuscriptMinus" type="button">−1</button>
-          <button id="manuscriptPlus" type="button">+1</button>
-          <a href="manuscript.html" style="margin-left:8px;">原稿チェックシート</a>
-        </div>
-      </div>
-    `;
+<table class="manuscript-table">
+<tr>
+<th>タイトル</th>
+<td><input id="msTitle" type="text" value="${escapeHtml(manuscript.title)}"></td>
+</tr>
+
+<tr>
+<th>締切</th>
+<td><input id="msDeadline" type="date" value="${manuscript.deadline}"></td>
+</tr>
+
+<tr>
+<th>総ページ</th>
+<td><input id="msTotal" type="number" min="1" max="9999" value="${manuscript.total}"></td>
+</tr>
+
+<tr>
+<th>進捗</th>
+<td><input id="msProgress" type="number" min="0" max="9999" value="${manuscript.progress}"></td>
+</tr>
+</table>
+
+<div class="manuscript-actions">
+<a href="manuscript.html">原稿チェックシート</a>
+</div>
+
+<div class="manuscript-actions">
+<button id="msSave" type="button">保存</button>
+<button id="msCancel" type="button">取消</button>
+</div>
+
+</div>
+`;
 
     document.getElementById("manuscriptEdit")?.addEventListener("click", () => {
       manuscriptEditMode = true;
@@ -823,6 +841,7 @@ document.querySelectorAll("#moodButtons button").forEach((btn) => {
 });
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
