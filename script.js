@@ -365,7 +365,7 @@ function renderManuscript() {
   const deadlineDate = new Date(manuscript.deadline);
   const remaining = manuscript.total - manuscript.progress;
 
-  let daysLeft = Math.ceil((deadlineDate - today) / (1000*60*60*24));
+  let daysLeft = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
   daysLeft = Math.max(daysLeft, 1);
 
   const pagesPerDay = (remaining / daysLeft).toFixed(1);
@@ -387,6 +387,7 @@ function renderManuscript() {
         <div style="margin-top:8px;">
           <button id="manuscriptMinus" type="button">−1</button>
           <button id="manuscriptPlus" type="button">+1</button>
+          <a href="manuscript.html" style="margin-left:8px;">原稿チェックシート</a>
         </div>
       </div>
     `;
@@ -435,34 +436,9 @@ function renderManuscript() {
         </label>
       </div>
 
-container.innerHTML = `
-  <div class="manuscript-card">
-    <h3 style="margin:0 0 8px 0;">原稿設定</h3>
-
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-      <label>タイトル
-        <input id="msTitle" type="text" value="${escapeHtml(manuscript.title)}" />
-      </label>
-
-      <label>締切
-        <input id="msDeadline" type="date" value="${manuscript.deadline}" />
-      </label>
-
-      <label>総ページ
-        <input id="msTotal" type="number" min="1" max="9999" value="${manuscript.total}" />
-      </label>
-
-      <label>進捗
-        <input id="msProgress" type="number" min="0" max="9999" value="${manuscript.progress}" />
-      </label>
-    </div>
-
-    <div style="margin-top:10px;">
-      <a href="manuscript.html">原稿チェックシート</a>
-    </div>
-
-  </div>
-`;
+      <div style="margin-top:10px;">
+        <a href="manuscript.html">原稿チェックシート</a>
+      </div>
 
       <div style="margin-top:10px;">
         <button id="msSave" type="button">保存</button>
@@ -470,6 +446,34 @@ container.innerHTML = `
       </div>
     </div>
   `;
+
+  document.getElementById("msCancel")?.addEventListener("click", () => {
+    manuscriptEditMode = false;
+    renderManuscript();
+  });
+
+  document.getElementById("msSave")?.addEventListener("click", () => {
+    const title = document.getElementById("msTitle")?.value.trim() || "原稿";
+    const deadline = document.getElementById("msDeadline")?.value || todayKey();
+    const total = Number(document.getElementById("msTotal")?.value);
+    let progress = Number(document.getElementById("msProgress")?.value);
+
+    if (!Number.isFinite(total) || total < 1) return;
+    if (!Number.isFinite(progress) || progress < 0) progress = 0;
+
+    progress = Math.min(progress, total);
+
+    manuscript.title = title;
+    manuscript.deadline = deadline;
+    manuscript.total = total;
+    manuscript.progress = progress;
+
+    saveManuscript();
+    manuscriptEditMode = false;
+    renderManuscript();
+    scheduleCloudSave();
+  });
+}
 
   document.getElementById("msCancel")?.addEventListener("click", () => {
     manuscriptEditMode = false;
@@ -835,6 +839,7 @@ renderMoodChart();
 
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
