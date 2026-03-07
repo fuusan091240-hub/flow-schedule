@@ -21,7 +21,17 @@ function saveChecklist() {
 }
 
 function initChecklist() {
-  if (checklist.length > 0) return;
+  const expectedCount = manuscript.total - manuscript.startPage + 1;
+
+  if (
+    checklist.length > 0 &&
+    Number.isFinite(expectedCount) &&
+    checklist.length === expectedCount
+  ) {
+    return;
+  }
+
+  checklist = [];
 
   for (let i = manuscript.startPage; i <= manuscript.total; i++) {
     checklist.push({
@@ -36,7 +46,6 @@ function initChecklist() {
 
   saveChecklist();
 }
-
 function renderTiles() {
   const container = document.getElementById("pageTiles");
   container.innerHTML = "";
