@@ -401,14 +401,12 @@ function renderManuscript() {
       manuscript.progress = Math.max(manuscript.progress - 1, 0);
       saveManuscript();
       renderManuscript();
-      scheduleCloudSave();
     });
 
     document.getElementById("manuscriptPlus")?.addEventListener("click", () => {
       manuscript.progress = Math.min(manuscript.progress + 1, manuscript.total);
       saveManuscript();
       renderManuscript();
-      scheduleCloudSave();
     });
 
     return;
@@ -471,10 +469,8 @@ function renderManuscript() {
     saveManuscript();
     manuscriptEditMode = false;
     renderManuscript();
-    scheduleCloudSave();
   });
 }
-
 
 function saveMoodLog(mood) {
   const key = todayKey();
@@ -813,6 +809,7 @@ renderMoodChart();
 
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
