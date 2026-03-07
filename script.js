@@ -501,7 +501,10 @@ const log = safeJsonParse("moodLog", {});
 const dates = Object.keys(log).sort().slice(-7);
 
 const labels = dates.map(d => d.slice(5));
-const moodValues = dates.map(d => log[d].mood ?? null);
+const moodValues = dates.map(d => {
+  const mood = log[d].mood;
+  return mood != null ? (capacityMap[mood] ?? null) : null;
+});
 const energyValues = dates.map(d => log[d].energy ?? null);
 
   if (moodChartInstance) {
@@ -514,7 +517,7 @@ const energyValues = dates.map(d => log[d].energy ?? null);
     labels,
     datasets: [
       {
-        label: "気分",
+        label: "許容量",
         data: moodValues,
         tension: 0.3,
         borderWidth: 2,
@@ -846,6 +849,7 @@ document.querySelectorAll("#moodButtons button").forEach((btn) => {
 });
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
