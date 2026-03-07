@@ -290,6 +290,7 @@ input[type="number"]{
 
 .manuscript-page #checklistTable > div{
   scroll-margin-top: 90px;
+}
   
 /* チェックシート本体 */
 .manuscript-page #checklistTable{
@@ -353,6 +354,7 @@ input[type="number"]{
     margin-top:6px;
   }
 }
+
 
 
 
