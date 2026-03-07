@@ -487,8 +487,13 @@ let moodChartInstance = null;
 function renderMoodChart() {
   const canvas = document.getElementById("moodChart");
   if (!canvas) return;
+  if (typeof Chart === "undefined") {
+    console.warn("Chart.js is not loaded");
+    return;
+  }
 
   const ctx = canvas.getContext("2d");
+  if (!ctx) return;
 
   const log = safeJsonParse("moodLog", {});
   const dates = Object.keys(log).sort().slice(-7);
@@ -525,7 +530,6 @@ function renderMoodChart() {
     }
   });
 }
-
 // =====================
 // Cloud sync (export/import)
 // =====================
@@ -735,7 +739,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderDaily();
   renderTasks();
   renderManuscript();
-  renderMoodChart();
 
   document.getElementById("addDaily")?.addEventListener("click", () => {
     const input = document.getElementById("dailyInput");
@@ -798,13 +801,14 @@ document.addEventListener("DOMContentLoaded", () => {
     scheduleCloudSave();
   });
 
+  renderMoodChart();
   startAutoSync();
 
   console.log("[BOOT] ready");
 });
-
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
