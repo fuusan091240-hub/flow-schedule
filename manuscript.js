@@ -18,6 +18,11 @@ let checklist = JSON.parse(localStorage.getItem("checklist")) || [];
 
 function saveChecklist() {
   localStorage.setItem("checklist", JSON.stringify(checklist));
+  syncProgressToManuscript();
+
+  if (typeof cloudSave === "function") {
+    cloudSave().catch(err => console.warn("cloudSave failed", err));
+  }
 }
 
 function syncProgressToManuscript() {
