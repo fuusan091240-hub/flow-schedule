@@ -375,6 +375,27 @@ input[type="number"]{
   }
 }
 
+.manuscript-link-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 12px;
+  min-height:40px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:#fff;
+  color:var(--text);
+  text-decoration:none;
+  font-size:14px;
+}
+
+.manuscript-link-btn:visited{
+  color:var(--text);
+}
+
+.manuscript-link-btn:hover{
+  background:#f9f9f9;
+}
 
 
 
