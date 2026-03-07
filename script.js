@@ -758,11 +758,14 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTasks();
   renderManuscript();
 
-  document.querySelectorAll("#moodButtons button").forEach(btn => {
-  const n = btn.dataset.mood;
+document.querySelectorAll("#moodButtons button").forEach(btn => {
+  const mood = btn.dataset.mood;
+  const capacity = capacityMap[mood];
+
   const span = document.createElement("span");
   span.className = "mood-num";
-  span.textContent = n;
+  span.textContent = capacity;
+
   btn.appendChild(span);
 });
 
@@ -849,6 +852,7 @@ document.querySelectorAll("#moodButtons button").forEach((btn) => {
 });
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
