@@ -455,6 +455,10 @@ input[type="number"]{
   color: #666;
 }
 
+.task-row > div{
+  flex: 1;
+  min-width: 0;
+}
 
 
 
