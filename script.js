@@ -361,75 +361,60 @@ function renderManuscript() {
   const container = document.getElementById("manuscript-section");
   if (!container) return;
 
-  const today = new Date();
-  const deadlineDate = new Date(manuscript.deadline);
-  const remaining = manuscript.total - manuscript.progress;
+const today = new Date();
+const deadlineDate = new Date(manuscript.deadline);
+const remaining = manuscript.total - manuscript.progress;
 
-  let daysLeft = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
-  daysLeft = Math.max(daysLeft, 1);
+const percent = manuscript.total > 0
+  ? Math.round((manuscript.progress / manuscript.total) * 100)
+  : 0;
 
-  const pagesPerDay = (remaining / daysLeft).toFixed(1);
+let daysLeft = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
+daysLeft = Math.max(daysLeft, 1);
+
+const pagesPerDay = (remaining / daysLeft).toFixed(1);
 
   if (!manuscriptEditMode) {
-container.innerHTML = `
-<div class="manuscript-card">
+  container.innerHTML = `
+    <div class="manuscript-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <h3 style="margin:0;">${escapeHtml(manuscript.title)}（${manuscript.deadline}締切）</h3>
+        <button id="manuscriptEdit" type="button">✏</button>
+      </div>
 
-<h3>原稿設定</h3>
+      <div>進捗：${manuscript.progress} / ${manuscript.total}（${percent}%）</div>
+      <div>残り：${remaining}</div>
+      <div style="opacity:0.65;font-size:0.95em;">
+        目安：あと${daysLeft}日 → 1日あたり ${pagesPerDay}p
+      </div>
 
-<table class="manuscript-table">
-<tr>
-<th>タイトル</th>
-<td><input id="msTitle" type="text" value="${escapeHtml(manuscript.title)}"></td>
-</tr>
+      <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <button id="manuscriptMinus" type="button">−1</button>
+        <button id="manuscriptPlus" type="button">+1</button>
+        <a href="manuscript.html" class="manuscript-link-btn">原稿チェックシート</a>
+      </div>
+    </div>
+  `;
 
-<tr>
-<th>締切</th>
-<td><input id="msDeadline" type="date" value="${manuscript.deadline}"></td>
-</tr>
+  document.getElementById("manuscriptEdit")?.addEventListener("click", () => {
+    manuscriptEditMode = true;
+    renderManuscript();
+  });
 
-<tr>
-<th>総ページ</th>
-<td><input id="msTotal" type="number" min="1" max="9999" value="${manuscript.total}"></td>
-</tr>
+  document.getElementById("manuscriptMinus")?.addEventListener("click", () => {
+    manuscript.progress = Math.max(manuscript.progress - 1, 0);
+    saveManuscript();
+    renderManuscript();
+  });
 
-<tr>
-<th>進捗</th>
-<td><input id="msProgress" type="number" min="0" max="9999" value="${manuscript.progress}"></td>
-</tr>
-</table>
+  document.getElementById("manuscriptPlus")?.addEventListener("click", () => {
+    manuscript.progress = Math.min(manuscript.progress + 1, manuscript.total);
+    saveManuscript();
+    renderManuscript();
+  });
 
-<div class="manuscript-actions">
-<a href="manuscript.html">原稿チェックシート</a>
-</div>
-
-<div class="manuscript-actions">
-<button id="msSave" type="button">保存</button>
-<button id="msCancel" type="button">取消</button>
-</div>
-
-</div>
-`;
-
-    document.getElementById("manuscriptEdit")?.addEventListener("click", () => {
-      manuscriptEditMode = true;
-      renderManuscript();
-    });
-
-    document.getElementById("manuscriptMinus")?.addEventListener("click", () => {
-      manuscript.progress = Math.max(manuscript.progress - 1, 0);
-      saveManuscript();
-      renderManuscript();
-    });
-
-    document.getElementById("manuscriptPlus")?.addEventListener("click", () => {
-      manuscript.progress = Math.min(manuscript.progress + 1, manuscript.total);
-      saveManuscript();
-      renderManuscript();
-    });
-
-    return;
-  }
-
+  return;
+}
   container.innerHTML = `
     <div class="manuscript-card">
       <h3 style="margin:0 0 8px 0;">原稿設定</h3>
@@ -841,6 +826,7 @@ document.querySelectorAll("#moodButtons button").forEach((btn) => {
 });
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
