@@ -53,16 +53,23 @@ function renderTiles() {
   checklist.forEach(item => {
     const tile = document.createElement("span");
     tile.textContent = item.page;
-    tile.style.display = "inline-block";
-    tile.style.margin = "4px";
-    tile.style.padding = "6px 10px";
-    tile.style.border = "1px solid #ccc";
-    tile.style.borderRadius = "6px";
 
     if (item.done) {
       tile.style.background = "#333";
       tile.style.color = "#fff";
     }
+
+    tile.style.cursor = "pointer";
+
+    tile.addEventListener("click", () => {
+      const target = document.getElementById(`page-${item.page}`);
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+    });
 
     container.appendChild(tile);
   });
@@ -73,8 +80,9 @@ function renderChecklist() {
   container.innerHTML = "";
 
   checklist.forEach((item, index) => {
-    const row = document.createElement("div");
-    row.style.marginBottom = "8px";
+ const row = document.createElement("div");
+row.style.marginBottom = "8px";
+row.id = `page-${item.page}`;
 
     row.innerHTML = `
       <strong>${item.page}p</strong>
