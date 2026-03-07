@@ -226,3 +226,25 @@ input[type="number"]{ flex: 0 1 120px; }
   margin-top:10px;
 }
 
+.manuscript-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(70px,1fr));
+  gap:8px;
+  margin-top:12px;
+}
+
+.page-box{
+  border:1px solid #ccc;
+  padding:6px;
+  text-align:center;
+  border-radius:6px;
+  background:#fafafa;
+}
+
+.page-box input{
+  margin-top:4px;
+}
+
+.page-done{
+  background:#dff5df;
+}
