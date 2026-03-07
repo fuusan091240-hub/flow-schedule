@@ -420,46 +420,19 @@ input[type="number"]{
   line-height:1;
 }
 
+.task-row{
+  align-items:flex-start;
+}
+
+.task-row > div{
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .task-meta{
   display:block;
   margin-top:4px;
   font-size:13px;
   color:#666;
+  white-space:nowrap;
 }
-
-/* タスク行の本文を広く使う */
-.task-row{
-  align-items:flex-start;
-}
-
-.task-row > div[style*="flex: 1"]{
-  flex: 1 1 auto !important;
-  min-width: 0;
-}
-
-/* 右側の✏️🗑ボタンを小さくする */
-.task-row > button{
-  flex: 0 0 40px;
-  width: 40px;
-  min-width: 40px;
-  height: 40px;
-  padding: 0;
-  border-radius: 999px;
-}
-
-/* メタ情報は必ず1段下に */
-.task-meta{
-  display: block;
-  margin-top: 4px;
-  font-size: 13px;
-  color: #666;
-}
-
-.task-row > div{
-  flex: 1;
-  min-width: 0;
-}
-
-
-
-
