@@ -272,6 +272,7 @@ input[type="number"]{
   margin-bottom:6px;
   background:#fafafa;
   border-radius:10px;
+  scroll-margin-top: 90px;
 }
 
 .manuscript-page #checklistTable strong{
@@ -319,4 +320,5 @@ input[type="number"]{
     margin-top:6px;
   }
 }
+
 
