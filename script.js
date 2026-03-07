@@ -459,6 +459,7 @@ const pagesPerDay = (remaining / daysLeft).toFixed(1);
     manuscript.progress = progress;
 
     saveManuscript();
+    scheduleCloudSave();
     manuscriptEditMode = false;
     renderManuscript();
   });
@@ -862,6 +863,7 @@ document.addEventListener("visibilitychange", () => {
 
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
