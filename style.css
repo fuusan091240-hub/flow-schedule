@@ -248,3 +248,41 @@ input[type="number"]{ flex: 0 1 120px; }
 .page-done{
   background:#dff5df;
 }
+/* ===== 原稿チェックシート ===== */
+
+#pageTiles{
+  margin-bottom:20px;
+}
+
+#pageTiles span{
+  display:inline-block;
+  min-width:36px;
+  text-align:center;
+  margin:4px;
+  padding:6px 10px;
+  border:1px solid #ccc;
+  border-radius:6px;
+  background:#fafafa;
+}
+
+#checklistTable{
+  display:grid;
+  gap:6px;
+}
+
+#checklistTable > div{
+  display:grid;
+  grid-template-columns:70px repeat(4,110px) 1fr;
+  align-items:center;
+  gap:6px;
+  padding:6px;
+  border-bottom:1px solid #eee;
+}
+
+#checklistTable label{
+  font-size:0.9em;
+}
+
+#checklistTable input[type="text"]{
+  width:100%;
+}
