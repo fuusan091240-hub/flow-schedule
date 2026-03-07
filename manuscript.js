@@ -20,6 +20,21 @@ function saveChecklist() {
   localStorage.setItem("checklist", JSON.stringify(checklist));
 }
 
+function syncProgressToManuscript() {
+  const doneCount = checklist.filter(item => item.done).length;
+
+  const manuscript = JSON.parse(localStorage.getItem("manuscript")) || {
+    title: "原稿",
+    deadline: "",
+    total: 0,
+    progress: 0,
+    startPage: 3
+  };
+
+  manuscript.progress = doneCount;
+  localStorage.setItem("manuscript", JSON.stringify(manuscript));
+}
+
 function initChecklist() {
   const expectedCount = manuscript.total - manuscript.startPage + 1;
 
@@ -104,17 +119,18 @@ function renderChecklist() {
     container.appendChild(row);
   });
 
-  container.querySelectorAll('input[type="checkbox"]').forEach(input => {
-    input.addEventListener("change", e => {
-      const index = Number(e.target.dataset.index);
-      const key = e.target.dataset.key;
+container.querySelectorAll('input[type="checkbox"]').forEach(input => {
+  input.addEventListener("change", e => {
+    const index = Number(e.target.dataset.index);
+    const key = e.target.dataset.key;
 
-      checklist[index][key] = e.target.checked;
+    checklist[index][key] = e.target.checked;
 
-      saveChecklist();
-      renderTiles();
-    });
+    saveChecklist();
+    syncProgressToManuscript();
+    renderTiles();
   });
+});
 
   container.querySelectorAll('input[type="text"]').forEach(input => {
     input.addEventListener("change", e => {
