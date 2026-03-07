@@ -388,28 +388,14 @@ const pagesPerDay = (remaining / daysLeft).toFixed(1);
         目安：あと${daysLeft}日 → 1日あたり ${pagesPerDay}p
       </div>
 
-      <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <button id="manuscriptMinus" type="button">−1</button>
-        <button id="manuscriptPlus" type="button">+1</button>
-        <a href="manuscript.html" class="manuscript-link-btn">原稿チェックシート</a>
-      </div>
+<div style="margin-top:8px;">
+  <a href="manuscript.html" class="manuscript-link-btn">原稿チェックシート</a>
+</div>
     </div>
   `;
 
   document.getElementById("manuscriptEdit")?.addEventListener("click", () => {
     manuscriptEditMode = true;
-    renderManuscript();
-  });
-
-  document.getElementById("manuscriptMinus")?.addEventListener("click", () => {
-    manuscript.progress = Math.max(manuscript.progress - 1, 0);
-    saveManuscript();
-    renderManuscript();
-  });
-
-  document.getElementById("manuscriptPlus")?.addEventListener("click", () => {
-    manuscript.progress = Math.min(manuscript.progress + 1, manuscript.total);
-    saveManuscript();
     renderManuscript();
   });
 
@@ -826,6 +812,7 @@ document.querySelectorAll("#moodButtons button").forEach((btn) => {
 });
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
