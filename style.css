@@ -199,4 +199,30 @@ input[type="number"]{ flex: 0 1 120px; }
     align-self: flex-end !important;
   }
 }
+/* ===== manuscript ===== */
+
+.manuscript-table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+.manuscript-table th {
+  text-align:left;
+  padding:6px;
+  width:90px;
+}
+
+.manuscript-table td {
+  padding:6px;
+}
+
+.manuscript-table input {
+  width:100%;
+  box-sizing:border-box;
+}
+
+.manuscript-actions{
+  margin-top:10px;
+}
 
