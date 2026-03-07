@@ -220,9 +220,11 @@ input[type="number"]{
 .manuscript-page h2,
 .manuscript-page #pageTiles,
 .manuscript-page #checklistTable{
-  max-width:980px;
-  margin-left:auto;
-  margin-right:auto;
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 .manuscript-page h2{
@@ -235,26 +237,25 @@ input[type="number"]{
 
 /* 上の完成タイル */
 .manuscript-page #pageTiles{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, 44px);
-  gap:8px;
-  justify-content:center;
-  margin-bottom:24px;
-  padding:0 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 44px);
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 24px;
 }
 
 .manuscript-page #pageTiles span{
-  width:44px;
-  height:44px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border:1px solid #ccc;
-  border-radius:6px;
-  background:#fafafa;
-  font-size:16px;
-  line-height:1;
-  white-space:nowrap;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fafafa;
+  font-size: 16px;
+  line-height: 1;
+  white-space: nowrap;
+  padding: 0;
 }
 
 /* チェックシート本体 */
@@ -279,19 +280,19 @@ input[type="number"]{
 }
 
 .manuscript-page #checklistTable label{
-  font-size:16px;
-  white-space:nowrap;
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  line-height:1.2;
+  font-size: 14px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.2;
 }
 
 .manuscript-page #checklistTable input[type="checkbox"]{
-  width:18px;
-  height:18px;
-  margin:0;
-  flex:0 0 18px;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex: 0 0 16px;
 }
 
 .manuscript-page #checklistTable input[type="text"]{
@@ -318,3 +319,4 @@ input[type="number"]{
     margin-top:6px;
   }
 }
+
