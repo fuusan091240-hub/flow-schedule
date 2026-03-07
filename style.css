@@ -177,7 +177,7 @@ input[type="number"]{
 .mood-buttons{
   display:flex;
   flex-wrap:nowrap;
-  gap:8px;
+  gap:4px;
   overflow-x:auto;
   -webkit-overflow-scrolling:touch;
   padding-bottom:4px;
@@ -419,6 +419,7 @@ input[type="number"]{
   opacity:0.6;
   line-height:1;
 }
+
 
 
 
