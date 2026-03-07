@@ -254,15 +254,34 @@ h2{
   background: #fafafa;
 }
 
-#checklistTable label{
-  font-size: 14px;
-  white-space: nowrap;
-}
-
 #checklistTable input[type="text"]{
   width:100%;
   box-sizing:border-box;
   font-size:16px;
 }
 
+/* ===== manuscript mobile fixes ===== */
+
+#checklistTable input[type="text"]{
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 16px;
+  min-height: 40px;
+  padding: 8px 10px;
+}
+
+#checklistTable input[type="checkbox"]{
+  width: 22px;
+  height: 22px;
+  margin: 0 6px 0 0;
+  vertical-align: middle;
+}
+
+#checklistTable label{
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+}
 
