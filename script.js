@@ -740,6 +740,21 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTasks();
   renderManuscript();
 
+document.querySelectorAll("#moodButtons button").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const mood = Number(btn.dataset.mood);
+    if (!Number.isFinite(mood)) return;
+
+    currentMood = mood;
+    localStorage.setItem("mood", String(currentMood));
+    saveMoodLog(currentMood);
+
+    renderTasks();
+    renderMoodChart();
+    scheduleCloudSave();
+  });
+});
+  
   document.getElementById("addDaily")?.addEventListener("click", () => {
     const input = document.getElementById("dailyInput");
     const title = input?.value.trim() || "";
@@ -808,6 +823,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
