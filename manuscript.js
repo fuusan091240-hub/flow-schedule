@@ -46,15 +46,17 @@ function initChecklist() {
 
   saveChecklist();
 }
+
 function renderTiles() {
   const container = document.getElementById("pageTiles");
+  if (!container) return;
   container.innerHTML = "";
 
   checklist.forEach(item => {
     const tile = document.createElement("span");
     tile.textContent = item.page;
+    tile.style.cursor = "pointer";
 
-    // 状態でクラス分け
     if (item.done) {
       tile.classList.add("tile-done");
     } else if (item.tone) {
@@ -66,8 +68,6 @@ function renderTiles() {
     } else {
       tile.classList.add("tile-empty");
     }
-
-    tile.style.cursor = "pointer";
 
     tile.addEventListener("click", () => {
       const target = document.getElementById(`page-${item.page}`);
@@ -82,14 +82,15 @@ function renderTiles() {
     container.appendChild(tile);
   });
 }
+
 function renderChecklist() {
   const container = document.getElementById("checklistTable");
+  if (!container) return;
   container.innerHTML = "";
 
   checklist.forEach((item, index) => {
- const row = document.createElement("div");
-row.style.marginBottom = "8px";
-row.id = `page-${item.page}`;
+    const row = document.createElement("div");
+    row.id = `page-${item.page}`;
 
     row.innerHTML = `
       <strong>${item.page}p</strong>
