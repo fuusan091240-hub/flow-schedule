@@ -283,3 +283,8 @@ input[type="number"]{ flex: 0 1 120px; }
   width:100%;
   box-sizing:border-box;
 }
+body{
+  max-width:800px;
+  margin:40px auto;
+  padding:0 20px;
+}
