@@ -482,6 +482,8 @@ function saveMoodLog(mood) {
   localStorage.setItem("moodLog", JSON.stringify(log));
 }
 
+let moodChartInstance = null;
+
 function renderMoodChart() {
   const canvas = document.getElementById("moodChart");
   if (!canvas) return;
@@ -491,10 +493,14 @@ function renderMoodChart() {
   const log = safeJsonParse("moodLog", {});
   const dates = Object.keys(log).sort().slice(-7);
 
-  const labels = dates.map(d => d.slice(5)); // MM-DD表示
+  const labels = dates.map(d => d.slice(5));
   const values = dates.map(d => log[d].mood);
 
-  new Chart(ctx, {
+  if (moodChartInstance) {
+    moodChartInstance.destroy();
+  }
+
+  moodChartInstance = new Chart(ctx, {
     type: "line",
     data: {
       labels,
@@ -724,14 +730,12 @@ function startAutoSync() {
 // Boot (DOM ready)
 // =====================
 document.addEventListener("DOMContentLoaded", () => {
+  refreshPassBanner();
   resetDailyIfNeeded();
   renderDaily();
   renderTasks();
   renderManuscript();
-
-  console.log("[BOOT] minimal ready");
-});
-  });
+  renderMoodChart();
 
   document.getElementById("addDaily")?.addEventListener("click", () => {
     const input = document.getElementById("dailyInput");
@@ -786,6 +790,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderTasks();
     scheduleCloudSave();
   });
+
   document.getElementById("showAll")?.addEventListener("click", () => {
     viewMode = "all";
     localStorage.setItem("viewMode", "all");
@@ -793,13 +798,6 @@ document.addEventListener("DOMContentLoaded", () => {
     scheduleCloudSave();
   });
 
-  resetDailyIfNeeded();
-  renderDaily();
-  renderTasks();
-  renderManuscript();
-
-renderMoodChart();
-  
   startAutoSync();
 
   console.log("[BOOT] ready");
@@ -807,12 +805,6 @@ renderMoodChart();
 
 // marker
 console.log("SCRIPT END REACHED");
-
-
-
-
-
-
 
 
 
