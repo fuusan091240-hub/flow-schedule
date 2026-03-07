@@ -54,9 +54,17 @@ function renderTiles() {
     const tile = document.createElement("span");
     tile.textContent = item.page;
 
+    // 状態でクラス分け
     if (item.done) {
-      tile.style.background = "#333";
-      tile.style.color = "#fff";
+      tile.classList.add("tile-done");
+    } else if (item.tone) {
+      tile.classList.add("tile-tone");
+    } else if (item.pen) {
+      tile.classList.add("tile-pen");
+    } else if (item.draft) {
+      tile.classList.add("tile-draft");
+    } else {
+      tile.classList.add("tile-empty");
     }
 
     tile.style.cursor = "pointer";
@@ -74,7 +82,6 @@ function renderTiles() {
     container.appendChild(tile);
   });
 }
-
 function renderChecklist() {
   const container = document.getElementById("checklistTable");
   container.innerHTML = "";
