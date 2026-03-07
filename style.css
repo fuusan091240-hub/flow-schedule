@@ -343,6 +343,26 @@ input[type="number"]{
   appearance:none;
 }
 
+.manuscript-page .back-to-top{
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text);
+  font-size: 14px;
+  min-height: 44px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  cursor: pointer;
+}
+
+.manuscript-page .back-to-top:active{
+  transform: translateY(1px);
+}
+
 /* スマホではコメント欄だけ下に落とす */
 @media (max-width:900px){
   .manuscript-page #checklistTable > div{
@@ -354,6 +374,7 @@ input[type="number"]{
     margin-top:6px;
   }
 }
+
 
 
 
