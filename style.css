@@ -243,13 +243,15 @@ input[type="number"]{ flex: 0 1 120px; }
 }
 
 .manuscript-page #checklistTable > div{
-  display: grid;
-  grid-template-columns: 64px repeat(4, max-content) minmax(220px, 1fr);
-  align-items: center;
-  gap: 14px;
-  padding: 12px 10px;
-  border-bottom: 1px solid #eee;
-  box-sizing: border-box;
+  display:grid;
+  grid-template-columns:60px repeat(4, max-content) 1fr;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  margin-bottom:8px;
+
+  background:#fafafa;
+  border-radius:10px;
 }
 
 .manuscript-page #checklistTable > div:nth-child(even){
@@ -301,5 +303,6 @@ input[type="number"]{ flex: 0 1 120px; }
     margin-top: 6px;
   }
 }
+
 
 
