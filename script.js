@@ -755,6 +755,14 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTasks();
   renderManuscript();
 
+  document.querySelectorAll("#moodButtons button").forEach(btn => {
+  const n = btn.dataset.mood;
+  const span = document.createElement("span");
+  span.className = "mood-num";
+  span.textContent = n;
+  btn.appendChild(span);
+});
+
 document.querySelectorAll("#moodButtons button").forEach((btn) => {
   btn.addEventListener("click", () => {
     const mood = Number(btn.dataset.mood);
@@ -838,6 +846,7 @@ document.querySelectorAll("#moodButtons button").forEach((btn) => {
 });
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
