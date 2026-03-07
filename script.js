@@ -475,32 +475,6 @@ function renderManuscript() {
   });
 }
 
-  document.getElementById("msCancel")?.addEventListener("click", () => {
-    manuscriptEditMode = false;
-    renderManuscript();
-  });
-
-  document.getElementById("msSave")?.addEventListener("click", () => {
-    const title = document.getElementById("msTitle")?.value.trim() || "原稿";
-    const deadline = document.getElementById("msDeadline")?.value || todayKey();
-    const total = Number(document.getElementById("msTotal")?.value);
-    let progress = Number(document.getElementById("msProgress")?.value);
-
-    if (!Number.isFinite(total) || total < 1) return;
-    if (!Number.isFinite(progress) || progress < 0) progress = 0;
-    progress = Math.min(progress, total);
-
-    manuscript.title = title;
-    manuscript.deadline = deadline;
-    manuscript.total = total;
-    manuscript.progress = progress;
-
-    saveManuscript();
-    scheduleCloudSave();
-    manuscriptEditMode = false;
-    renderManuscript();
-  });
-}
 
 function saveMoodLog(mood) {
   const key = todayKey();
@@ -839,6 +813,7 @@ renderMoodChart();
 
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
