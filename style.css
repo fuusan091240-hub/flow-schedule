@@ -258,6 +258,36 @@ input[type="number"]{
   padding: 0;
 }
 
+.manuscript-page #pageTiles span.tile-empty{
+  background:#fafafa;
+  color:#222;
+}
+
+.manuscript-page #pageTiles span.tile-draft{
+  background:#e8f1ff;
+  color:#1f3b73;
+  border-color:#bfd4ff;
+}
+
+.manuscript-page #pageTiles span.tile-pen{
+  background:#fff4db;
+  color:#6b4b00;
+  border-color:#f1d28a;
+}
+
+.manuscript-page #pageTiles span.tile-tone{
+  background:#f3e8ff;
+  color:#5a2b82;
+  border-color:#d7b7f6;
+}
+
+.manuscript-page #pageTiles span.tile-done{
+  background:#333;
+  color:#fff;
+  border-color:#333;
+  font-weight:600;
+}
+
 /* チェックシート本体 */
 .manuscript-page #checklistTable{
   padding:0 12px 24px;
@@ -320,5 +350,6 @@ input[type="number"]{
     margin-top:6px;
   }
 }
+
 
 
