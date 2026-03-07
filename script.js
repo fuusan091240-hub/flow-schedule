@@ -266,7 +266,9 @@ function renderTasks() {
     const viewBox = document.createElement("div");
     viewBox.style.flex = "1";
 
-    const deadlineText = task.deadline ? task.deadline : "締切なし";
+    const deadlineText = task.deadline
+  ? task.deadline.slice(5)
+  : "締切なし";
     viewBox.innerHTML = `
       <strong>${escapeHtml(task.title)}</strong>
       <span class="task-meta">（締切: ${deadlineText} / 消耗度: ${Number(task.energy || 0)}）</span>
@@ -863,6 +865,7 @@ document.addEventListener("visibilitychange", () => {
 
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
