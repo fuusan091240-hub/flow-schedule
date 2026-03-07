@@ -420,6 +420,12 @@ input[type="number"]{
   line-height:1;
 }
 
+.task-meta{
+  display:block;
+  margin-top:4px;
+  font-size:13px;
+  color:#666;
+}
 
 
 
