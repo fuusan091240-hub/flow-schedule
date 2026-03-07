@@ -224,7 +224,7 @@ input[type="number"]{ flex: 0 1 120px; }
   gap: 8px;
   margin-bottom: 24px;
   padding: 0 16px;
-  justify-content: start;
+  justify-content: center;
 }
 
 .manuscript-page #pageTiles span{
@@ -306,3 +306,4 @@ input[type="number"]{ flex: 0 1 120px; }
     margin-top: 6px;
   }
 }
+
