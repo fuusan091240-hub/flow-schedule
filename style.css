@@ -282,9 +282,9 @@ input[type="number"]{
 }
 
 .manuscript-page #pageTiles span.tile-done{
-  background:#dff5df;
-  color:#1f5a1f;
-  border-color:#a8d5a8;
+  background:#333;
+  color:#fff;
+  border-color:#333;
   font-weight:600;
 }
 
@@ -353,6 +353,7 @@ input[type="number"]{
     margin-top:6px;
   }
 }
+
 
 
 
