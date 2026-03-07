@@ -218,6 +218,8 @@ function renderTasks() {
   const used = (tasks || [])
     .filter(t => t && t.done)
     .reduce((sum, t) => sum + Number(t.energy || 0), 0);
+  
+  saveEnergyLog(used);
 
   const display = document.getElementById("capacityDisplay");
   if (display) {
@@ -468,6 +470,16 @@ function saveMoodLog(mood) {
     mood: Number(mood),
     updatedAt: new Date().toISOString()
   };
+  localStorage.setItem("moodLog", JSON.stringify(log));
+}
+
+function saveEnergyLog(energy){
+  const key = todayKey();
+  const log = safeJsonParse("moodLog", {});
+
+  if(!log[key]) log[key] = {};
+  log[key].energy = energy;
+
   localStorage.setItem("moodLog", JSON.stringify(log));
 }
 
@@ -812,6 +824,7 @@ document.querySelectorAll("#moodButtons button").forEach((btn) => {
 });
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
