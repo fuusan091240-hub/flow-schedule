@@ -286,3 +286,6 @@ input[type="number"]{ flex: 0 1 120px; }
 #checklistTable input[type="text"]{
   width:100%;
 }
+#checklistTable > div:nth-child(even){
+  background:#fafafa;
+}
