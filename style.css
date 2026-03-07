@@ -201,11 +201,11 @@ input[type="number"]{ flex: 0 1 120px; }
 }
 /* ===== manuscript page ===== */
 
-body{
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 0 24px;
-  box-sizing: border-box;
+#pageTiles,
+#checklistTable{
+  max-width:900px;
+  margin-left:auto;
+  margin-right:auto;
 }
 
 h2{
@@ -280,4 +280,5 @@ h2{
   box-sizing:border-box;
   font-size:16px;
 }
+
 
