@@ -201,8 +201,18 @@ input[type="number"]{ flex: 0 1 120px; }
 }
 /* ===== manuscript page ===== */
 
-#pageTiles,
+/* manuscript page only */
 
+#pageTiles,
+#checklistTable{
+  max-width:900px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+#pageTiles{
+  margin-top:20px;
+}
 h2{
   margin-bottom: 20px;
 }
@@ -275,6 +285,7 @@ h2{
   box-sizing:border-box;
   font-size:16px;
 }
+
 
 
 
