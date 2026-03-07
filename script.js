@@ -848,10 +848,19 @@ document.querySelectorAll("#moodButtons button").forEach((btn) => {
   renderMoodChart();
   startAutoSync();
 
-  console.log("[BOOT] ready");
+console.log("[BOOT] ready");
 });
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    manuscript = loadManuscriptSafe();
+    renderManuscript();
+  }
+});
+
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
