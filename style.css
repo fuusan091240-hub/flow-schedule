@@ -7,31 +7,26 @@
   --gap:12px;
 }
 
-/* 変な縦書き事故の強制停止 */
-html, body, *{
-  writing-mode: horizontal-tb !important;
-  text-orientation: mixed !important;
-}
-
-*,
-*::before,
-*::after{ box-sizing:border-box; }
-
+/* 基本 */
 html, body{
   width:100%;
   max-width:100%;
   overflow-x:hidden;
 }
 
+*,
+*::before,
+*::after{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
   background:var(--bg);
   color:var(--text);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
   font-size:16px;
   line-height:1.5;
-  overflow-wrap:anywhere;
-  word-break:break-word;
 }
 
 .container{
@@ -41,8 +36,15 @@ body{
   padding:12px;
 }
 
-h1{ margin: 8px 0 12px; font-size:22px; }
-h2{ margin: 0 0 10px; font-size:18px; }
+h1{
+  margin:8px 0 12px;
+  font-size:22px;
+}
+
+h2{
+  margin:0 0 10px;
+  font-size:18px;
+}
 
 .panel{
   background:var(--panel);
@@ -59,18 +61,22 @@ h2{ margin: 0 0 10px; font-size:18px; }
   background:#fff;
   border-bottom:1px solid var(--border);
   padding:10px 12px;
-  border-radius: 0 0 12px 12px;
+  border-radius:0 0 12px 12px;
 }
+
 .banner__row{
   display:flex;
   gap:10px;
   align-items:center;
   justify-content:space-between;
 }
-.banner__text{ font-size:14px; }
+
+.banner__text{
+  font-size:14px;
+}
 
 .capacity{
-  margin: 6px 0 10px;
+  margin:6px 0 10px;
   opacity:.9;
 }
 
@@ -85,7 +91,7 @@ h2{ margin: 0 0 10px; font-size:18px; }
   display:flex;
   gap:8px;
   flex-wrap:wrap;
-  margin: 10px 0;
+  margin:10px 0;
 }
 
 .btn{
@@ -95,23 +101,32 @@ h2{ margin: 0 0 10px; font-size:18px; }
   background:#fff;
   min-height:44px;
   cursor:pointer;
+  font-size:16px;
 }
 
 input[type="text"],
 input[type="date"],
 input[type="number"],
-textarea {
+textarea{
   padding:10px 12px;
   border-radius:12px;
   border:1px solid var(--border);
   background:#fff;
   min-height:44px;
-  font-size:16px;          /* ★iOSズーム防止 */
+  font-size:16px;
 }
 
-input[type="text"]{ flex: 1 1 240px; }
-input[type="date"]{ flex: 0 1 160px; }
-input[type="number"]{ flex: 0 1 120px; }
+input[type="text"]{
+  flex:1 1 240px;
+}
+
+input[type="date"]{
+  flex:0 1 160px;
+}
+
+input[type="number"]{
+  flex:0 1 120px;
+}
 
 .list{
   list-style:none;
@@ -136,10 +151,19 @@ input[type="number"]{ flex: 0 1 120px; }
   flex:0 0 auto;
 }
 
-.task-meta{ opacity:.65; margin-left:6px; font-size:0.95em; }
+.task-meta{
+  opacity:.65;
+  margin-left:6px;
+  font-size:.95em;
+}
 
-.task-done{ opacity:.6; }
-.task-disabled{ opacity:.45; }
+.task-done{
+  opacity:.6;
+}
+
+.task-disabled{
+  opacity:.45;
+}
 
 .manuscript-card{
   background:var(--panel);
@@ -149,86 +173,79 @@ input[type="number"]{ flex: 0 1 120px; }
   margin:12px 0;
 }
 
-/* 気分ボタン：1行固定（足りなければ横スクロール） */
+/* 気分ボタン */
 .mood-buttons{
   display:flex;
   flex-wrap:nowrap;
   gap:8px;
   overflow-x:auto;
-  -webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling:touch;
   padding-bottom:4px;
 }
+
 .mood-buttons .btn{
   flex:0 0 auto;
   white-space:nowrap;
 }
 
-/* スマホは行を縦に */
-@media (max-width: 480px){
+/* Daily */
+#dailyList .task-row{
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+}
+
+#dailyList .task-row > span{
+  flex:1 1 auto;
+}
+
+#dailyList .task-row > button{
+  margin-left:auto;
+}
+
+@media (max-width:480px){
   .task-row{
     align-items:flex-start;
   }
-}
 
-/* Daily の削除ボタンを右寄せ */
-#dailyList .task-row button {
-  margin-left: auto;
-}
-/* ===== Daily: ゴミ箱を確実に右端へ ===== */
-
-/* Daily行は必ず横並びにする */
-#dailyList .task-row{
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-}
-
-/* 真ん中のテキストが伸びてスペースを作る */
-#dailyList .task-row > span{
-  flex: 1 1 auto !important;
-}
-
-/* ゴミ箱ボタンは右端へ押し出す */
-#dailyList .task-row > button{
-  margin-left: auto !important;
-}
-
-/* もし何かの影響で縦積みになっても右端に寄せる保険 */
-@media (max-width: 480px){
   #dailyList .task-row > button{
-    align-self: flex-end !important;
+    align-self:flex-end;
   }
 }
 
-/* ===== manuscript sheet readable mobile ===== */
+/* =========================
+   manuscript page only
+========================= */
 
+.manuscript-page h2,
 .manuscript-page #pageTiles,
-.manuscript-page #checklistTable,
-.manuscript-page h2{
-  max-width: 980px;
-  margin-left: auto;
-  margin-right: auto;
+.manuscript-page #checklistTable{
+  max-width:980px;
+  margin-left:auto;
+  margin-right:auto;
 }
 
 .manuscript-page h2{
-  margin-top: 20px;
-  margin-bottom: 20px;
-  padding: 0 16px;
-  font-size: 28px;
-  line-height: 1.4;
+  margin-top:20px;
+  margin-bottom:20px;
+  padding:0 16px;
+  font-size:24px;
+  line-height:1.3;
 }
 
+/* 上の完成タイル */
 .manuscript-page #pageTiles{
   display:grid;
-  grid-template-columns:repeat(auto-fill,40px);
+  grid-template-columns:repeat(auto-fill, 44px);
   gap:8px;
   justify-content:center;
   margin-bottom:24px;
+  padding:0 12px;
 }
 
 .manuscript-page #pageTiles span{
-  width:40px;
-  height:40px;
+  width:44px;
+  height:44px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -236,66 +253,16 @@ input[type="number"]{ flex: 0 1 120px; }
   border-radius:6px;
   background:#fafafa;
   font-size:16px;
-  line-height: 1;
+  line-height:1;
+  white-space:nowrap;
 }
 
+/* チェックシート本体 */
 .manuscript-page #checklistTable{
-  padding: 0 16px 24px;
+  padding:0 12px 24px;
 }
 
 .manuscript-page #checklistTable > div{
-  display:grid;
-  grid-template-columns:60px repeat(4, max-content) 1fr;
-  align-items:center;
-  gap:10px;
-  padding:10px 12px;
-  margin-bottom:8px;
-
-  background:#fafafa;
-  border-radius:10px;
-}
-
-.manuscript-page #checklistTable > div:nth-child(even){
-  background: #fafafa;
-}
-
-.manuscript-page #checklistTable strong{
-  font-size: 18px;
-  line-height: 1.2;
-}
-
-.manuscript-page #checklistTable label{
-  font-size: 16px;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  line-height: 1.2;
-}
-
-.manuscript-page #checklistTable input[type="checkbox"]{
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  flex: 0 0 18px;
-}
-
-.manuscript-page #checklistTable input[type="text"]{
-  width: 100%;
-  min-height: 48px;
-  padding: 10px 12px;
-  box-sizing: border-box;
-  font-size: 16px;
-  line-height: 1.4;
-  border: 1px solid #d8d8d8;
-  border-radius: 10px;
-  -webkit-appearance: none;
-  appearance: none;
-  transform: translateZ(0);
-}
-
-@media (max-width: 900px){
-  .manuscript-page #checklistTable > div{
   display:grid;
   grid-template-columns:60px repeat(4, max-content) 1fr;
   align-items:center;
@@ -306,13 +273,48 @@ input[type="number"]{ flex: 0 1 120px; }
   border-radius:10px;
 }
 
-  .manuscript-page #checklistTable input[type="text"]{
-    grid-column: 1 / -1;
-    margin-top: 6px;
-  }
+.manuscript-page #checklistTable strong{
+  font-size:18px;
+  line-height:1.2;
 }
 
+.manuscript-page #checklistTable label{
+  font-size:16px;
+  white-space:nowrap;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  line-height:1.2;
+}
 
+.manuscript-page #checklistTable input[type="checkbox"]{
+  width:18px;
+  height:18px;
+  margin:0;
+  flex:0 0 18px;
+}
 
+.manuscript-page #checklistTable input[type="text"]{
+  width:100%;
+  min-height:44px;
+  padding:8px 10px;
+  font-size:16px;
+  line-height:1.4;
+  border:1px solid #d8d8d8;
+  border-radius:10px;
+  background:#fff;
+  -webkit-appearance:none;
+  appearance:none;
+}
 
+/* スマホではコメント欄だけ下に落とす */
+@media (max-width:900px){
+  .manuscript-page #checklistTable > div{
+    grid-template-columns:60px repeat(4, max-content);
+  }
 
+  .manuscript-page #checklistTable input[type="text"]{
+    grid-column:1 / -1;
+    margin-top:6px;
+  }
+}
