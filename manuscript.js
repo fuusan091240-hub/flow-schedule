@@ -132,7 +132,6 @@ container.querySelectorAll('input[type="checkbox"]').forEach(input => {
     checklist[index][key] = e.target.checked;
 
     saveChecklist();
-    syncProgressToManuscript();
     renderTiles();
   });
 });
