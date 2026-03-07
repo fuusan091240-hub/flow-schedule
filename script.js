@@ -555,23 +555,25 @@ function exportState() {
   return {
     version: 1,
     savedAt: new Date().toISOString(),
-    data: {
-      mood: Number(localStorage.getItem("mood") || 2),
-      tasks: safeJsonParse("tasks", []),
-      daily: safeJsonParse("daily", []),
-      manuscript: safeJsonParse("manuscript", {}),
-      viewMode: localStorage.getItem("viewMode") || "today"
-    }
+data: {
+  mood: Number(localStorage.getItem("mood") || 2),
+  tasks: safeJsonParse("tasks", []),
+  daily: safeJsonParse("daily", []),
+  manuscript: safeJsonParse("manuscript", {}),
+  checklist: safeJsonParse("checklist", []),
+  viewMode: localStorage.getItem("viewMode") || "today"
+}
   };
 }
 
 function importState(state) {
   const d = (state && state.data) || {};
-  localStorage.setItem("mood", String(d.mood ?? 2));
-  localStorage.setItem("tasks", JSON.stringify(d.tasks ?? []));
-  localStorage.setItem("daily", JSON.stringify(d.daily ?? []));
-  localStorage.setItem("viewMode", d.viewMode ?? "today");
-
+localStorage.setItem("mood", String(d.mood ?? 2));
+localStorage.setItem("tasks", JSON.stringify(d.tasks ?? []));
+localStorage.setItem("daily", JSON.stringify(d.daily ?? []));
+localStorage.setItem("checklist", JSON.stringify(d.checklist ?? []));
+localStorage.setItem("viewMode", d.viewMode ?? "today");
+  
   const m = d.manuscript || {};
   const safeManuscript = {
   title: typeof m.title === "string" ? m.title : "原稿",
@@ -860,6 +862,7 @@ document.addEventListener("visibilitychange", () => {
 
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
