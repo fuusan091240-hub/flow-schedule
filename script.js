@@ -140,8 +140,14 @@ function saveManuscript() { localStorage.setItem("manuscript", JSON.stringify(ma
 
 function todayKey() {
   const d = new Date();
+
+  // 朝5時までは前日扱い
+  if (d.getHours() < 5) {
+    d.setDate(d.getDate() - 1);
+  }
+
   const y = d.getFullYear();
-  const m = String(d.getMonth()+1).padStart(2, "0");
+  const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
 }
@@ -865,6 +871,7 @@ document.addEventListener("visibilitychange", () => {
 
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
