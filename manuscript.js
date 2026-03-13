@@ -41,30 +41,40 @@ function syncProgressToManuscript() {
 }
 
 function initChecklist() {
-  const expectedCount = manuscript.total - manuscript.startPage + 1;
+  const total = Number(manuscript.total);
+  const startPage = Number(manuscript.startPage);
 
-  if (
-    checklist.length > 0 &&
-    Number.isFinite(expectedCount) &&
-    checklist.length === expectedCount
-  ) {
-    return;
+  if (!Number.isFinite(total) || total < 1) return;
+  if (!Number.isFinite(startPage) || startPage < 1) return;
+  if (startPage > total) return;
+
+  const existingMap = new Map(
+    (Array.isArray(checklist) ? checklist : []).map(item => [item.page, item])
+  );
+
+  const nextChecklist = [];
+
+  for (let i = startPage; i <= total; i++) {
+    const old = existingMap.get(i);
+    nextChecklist.push(
+      old || {
+        page: i,
+        draft: false,
+        pen: false,
+        tone: false,
+        done: false,
+        memo: ""
+      }
+    );
   }
 
-  checklist = [];
+  const changed = JSON.stringify(checklist) !== JSON.stringify(nextChecklist);
 
-  for (let i = manuscript.startPage; i <= manuscript.total; i++) {
-    checklist.push({
-      page: i,
-      draft: false,
-      pen: false,
-      tone: false,
-      done: false,
-      memo: ""
-    });
+  checklist = nextChecklist;
+
+  if (changed) {
+    saveChecklist();
   }
-
-  saveChecklist();
 }
 
 function renderTiles() {
