@@ -374,10 +374,13 @@ function renderManuscript() {
 
 const today = new Date();
 const deadlineDate = new Date(manuscript.deadline);
-const remaining = manuscript.total - manuscript.progress;
 
-const percent = manuscript.total > 0
-  ? Math.round((manuscript.progress / manuscript.total) * 100)
+const actualTotal = Math.max(manuscript.total - manuscript.startPage + 1, 0);
+const actualProgress = Math.min(manuscript.progress, actualTotal);
+const remaining = Math.max(actualTotal - actualProgress, 0);
+
+const percent = actualTotal > 0
+  ? Math.round((actualProgress / actualTotal) * 100)
   : 0;
 
 let daysLeft = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
@@ -393,7 +396,7 @@ const pagesPerDay = (remaining / daysLeft).toFixed(1);
         <button id="manuscriptEdit" type="button">✏</button>
       </div>
 
-      <div>進捗：${manuscript.progress} / ${manuscript.total}（${percent}%）</div>
+      <div>進捗：${actualProgress} / ${actualTotal}（${percent}%）</div>
       <div>残り：${remaining}</div>
       <div style="opacity:0.65;font-size:0.95em;">
         目安：あと${daysLeft}日 → 1日あたり ${pagesPerDay}p
@@ -871,6 +874,7 @@ document.addEventListener("visibilitychange", () => {
 
 // marker
 console.log("SCRIPT END REACHED");
+
 
 
 
