@@ -156,6 +156,7 @@ container.querySelectorAll('input[type="checkbox"]').forEach(input => {
 }
 
 initChecklist();
+syncProgressToManuscript();
 renderTiles();
 renderChecklist();
 
