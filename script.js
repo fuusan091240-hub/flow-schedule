@@ -872,6 +872,11 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
+window.addEventListener("pageshow", () => {
+  manuscript = loadManuscriptSafe();
+  renderManuscript();
+});
+
 // marker
 console.log("SCRIPT END REACHED");
 
